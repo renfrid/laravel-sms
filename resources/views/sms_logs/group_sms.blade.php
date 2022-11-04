@@ -114,6 +114,41 @@
                     <!--./row -->
 
                     <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label>Schedule</label><br />
+                                {{ Form::checkbox('schedule', 1, old('schedule'), ['id' => 'schedule']) }} YES
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label>Schedule Date</label>
+                                {{ Form::date('schedule_at', old('schedule_at'), ['class="form-control"', 'min' => date('Y-m-d')]) }}
+                                <span class="text-danger">{{ $errors->first('schedule_at') }}</span>
+                            </div>
+                        </div>
+                    
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label>Schedule Time</label>
+                                @php
+                                    $_options = [];
+                                    $range = range(strtotime('06:00'), strtotime('23:00'), 30 * 60);
+                                    foreach ($range as $time) {
+                                        $_options[date('H:i', $time)] = date('H:i', $time);
+                                    }
+                                    $_options = ['' => '-- Select --'] + $_options;
+                                @endphp
+                                {{ Form::select('schedule_time', $_options, old('schedule_time'), ['class' => 'form-control']) }}
+                                <span class="text-danger">{{ $errors->first('schedule_time') }}</span>
+                            </div>
+                        </div>
+                    </div> <!-- /.row -->
+
+                    <div class="row">
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <a href="{{ url('sms-logs/lists') }}" class="btn btn-outline-danger btn-xs text-medium">Cancel</a>

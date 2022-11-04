@@ -40,31 +40,38 @@ class SendSMSJob implements ShouldQueue
         //call messaging class
         $messaging = new Messaging();
 
-        //message id
+        //data submitted
         $messageId = $this->data['message_id'];
         $message = $this->data['message'];
         $sender = $this->data['sender'];
+        $schedule = $this->data['schedule'];
 
         //limit
         $limit = 100;
-        $no_of_pending_sms = SmsLog::where(['message_id' => $messageId, 'schedule' => NULL, 'status' => 'PENDING'])->count();
+        $no_of_pending_sms = SmsLog::where(['message_id' => $messageId, 'status' => 'PENDING'])->count();
 
         //looping sms
         $looping = $no_of_pending_sms / $limit;
 
         //iterate looping
         for ($i = 1; $i <= ceil($looping); $i++) {
-            $recipients = SmsLog::select('id', 'phone')->where(['message_id' => $messageId, 'schedule' => NULL, 'status' => 'PENDING'])->take($limit)->get();
+            $recipients = SmsLog::select('id', 'phone', 'schedule_at')->where(['message_id' => $messageId, 'status' => 'PENDING'])->take($limit)->get();
 
             foreach ($recipients as $val) {
                 //create arr data
                 $postData = array(
                     'source_addr' => $sender,
                     'encoding' => 0,
-                    'schedule_time' => '',
+                    //'schedule_time' => '',
                     'message' => $message,
                     'recipients' => [array('recipient_id' => 1, 'dest_addr' => $messaging->castPhone($val->phone))]
                 );
+
+                //check for schedule
+                if ($schedule == 1)
+                    $postData['schedule_time'] = $val->schedule_at;
+                else
+                    $postData['schedule_time'] = '';
 
                 //post data
                 $response = $messaging->sendSMS($postData);

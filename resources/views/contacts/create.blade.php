@@ -65,7 +65,7 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="mb-3">
-                                <label>Contact Group</label>
+                                <label>Contact Group <span class="text-danger">*</span></label>
                                 <table>
                                     <tr>
                                         @php $serial = 0; @endphp
@@ -82,7 +82,7 @@
                                         @endforeach
                                     </tr>
                                 </table>
-
+                                <span class="text-danger">{{ $errors->first('group_ids') }}</span>
                             </div>
                         </div>
                         <!--./col-lg-12 -->

@@ -196,14 +196,9 @@ class ContactGroupController extends Controller
         //group
         $group = Group::findOrFail($id);
 
-        //delete contact group
-        foreach ($group->contacts as $val) {
-            $group->contacts()->detach($val->id);
-        }
-
         //insert contact group
         foreach ($request->input('contact_ids') as $contact_id) {
-            $group->contacts()->attach($contact_id);
+            $group->contacts()->sync($contact_id);
         }
 
         //redirect

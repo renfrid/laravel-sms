@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Classes\Messaging;
 use App\Imports\ContactImport;
 use App\Models\Contact;
+use App\Models\ContactGroup;
 use App\Models\Group;
 use App\Rules\PhoneNumber;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -17,6 +18,9 @@ class ContactController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
+        //messaging
+        $this->messaging = new Messaging();
     }
 
     /**
@@ -64,20 +68,22 @@ class ContactController extends Controller
             $request,
             [
                 'name' => 'required',
-                'phone' => ['required', new PhoneNumber(), 'unique:contacts']
+                'phone' => ['required', new PhoneNumber(), 'unique:contacts'],
+                'group_ids' => 'required'
             ],
             [
                 'name.required' => 'Contact name required',
                 'phone.required' => 'Phone number required',
+                'group_ids.required' => 'Contact group required'
             ]
         );
 
         //create new contacts
         $contact = new Contact([
-            'name' => $request->input('name'),
             'phone' => $request->input('phone'),
             'created_by' => Auth::user()->id
         ]);
+        $contact->name = $request->input('name');
         $contact->save();
 
         //insert contact group
@@ -114,9 +120,11 @@ class ContactController extends Controller
             $request,
             [
                 'attachment' => 'required',
+                'group_ids' => 'required'
             ],
             [
-                'attachment.required' => 'Contact name required',
+                'attachment.required' => 'Attach file required',
+                'group_ids.required' => 'Contact group required'
             ]
         );
 
@@ -199,14 +207,9 @@ class ContactController extends Controller
         $contact->updated_by = Auth::user()->id;
         $contact->save();
 
-        //delete contact group
-        foreach ($contact->groups as $val) {
-            $contact->groups()->detach($val->id);
-        }
-
         //insert contact group
         foreach ($request->input('group_ids') as $group_id) {
-            $contact->groups()->attach($group_id);
+            $contact->groups()->sync($group_id);
         }
 
         //redirect
@@ -225,6 +228,7 @@ class ContactController extends Controller
 
         if ($del = $contact->delete()) {
             //delete contact group
+            ContactGroup::where(['contact_id' => $id])->delete();
 
             //redirect
             return Redirect::route('contacts.index')->with('success', 'Contact deleted!');

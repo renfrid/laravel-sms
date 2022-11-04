@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Classes\Messaging;
 use App\Models\Contact;
 use App\Rules\ExcelPhone;
 use App\Rules\PhoneNumber;
@@ -35,21 +36,21 @@ class ContactImport implements ToCollection, WithHeadingRow
 
         foreach ($rows as $row) {
             //cast phone
-            $phone = '0' . $row['phone'];
+            $phone = '0' . trim($row['phone']);
 
             //check if farmer insert
             $contact = Contact::firstOrNew(
                 [
-                    'name' => $row['name'],
                     'phone' => $phone,
                     'created_by' => Auth::user()->id
                 ]
             );
+            $contact->name = $row['name'];
             $contact->save();
 
             //insert contact group
             foreach ($this->groups as $group_id) {
-                $contact->groups()->attach($group_id);
+                $contact->groups()->sync($group_id);
             }
         }
     }

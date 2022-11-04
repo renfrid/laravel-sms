@@ -2,6 +2,8 @@
 
 namespace App\Classes;
 
+use function PHPUnit\Framework\isEmpty;
+
 class Messaging
 {
     private $API_BASE_URL;
@@ -108,5 +110,21 @@ class Messaging
         } else {
             return str_replace('+', '', $mobile);
         }
+    }
+
+    //add 0 on the mobile phone
+    function addZeroOnPhone($mobile)
+    {
+        if (!isEmpty($mobile)) {
+            if (strlen($mobile) == 9) {
+                $phone = '0' . $mobile;
+            } else {
+                $phone = $mobile;
+            }
+        } else {
+            $phone = $mobile;
+        }
+
+        return $phone;
     }
 }

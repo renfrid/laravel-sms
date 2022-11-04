@@ -100,8 +100,12 @@ class SmsLogController extends Controller
             $sms_log->save();
         }
 
-        //call background job for sending sms
+        //call background job for sending direct sms
+        //schedule = null
+        $schedule = $request->input('schedule');
+
         $data = [
+            "schedule" => $schedule,
             "message_id" => $messageId,
             "sender" => $sender,
             "message" => $message
@@ -179,8 +183,12 @@ class SmsLogController extends Controller
             }
         }
 
-        //call background job for sending sms
+        //call background job for sending direct sms
+        //schedule = null
+        $schedule = $request->input('schedule');
+
         $data = [
+            "schedule" => $schedule,
             "message_id" => $messageId,
             "sender" => $sender,
             "message" => $message
@@ -271,8 +279,12 @@ class SmsLogController extends Controller
                 $sms_log->save();
             }
 
-            //call background job for sending sms
+            //call background job for sending direct sms
+            //schedule = null
+            $schedule = $request->input('schedule');
+
             $data = [
+                "schedule" => $schedule,
                 "message_id" => $messageId,
                 "sender" => $sender,
                 "message" => $message
@@ -287,6 +299,54 @@ class SmsLogController extends Controller
     //send schedule sms
     function send_schedule_sms()
     {
+        //limit
+        $limit = 100;
+        $no_of_pending_sms = SmsLog::where(['schedule' => 1, 'status' => 'PENDING'])->count();
+
+        //looping sms
+        $looping = $no_of_pending_sms / $limit;
+
+        //iterate looping
+        // for ($i = 1; $i <= ceil($looping); $i++) {
+        //     $recipients = SmsLog::select('id', 'phone', 'sender', 'message')->where(['schedule' => 1, 'status' => 'PENDING'])->take($limit)->get();
+
+        //     foreach ($recipients as $val) {
+        //         //create arr data
+        //         $postData = array(
+        //             'source_addr' => $val->sender,
+        //             'encoding' => 0,
+        //             'schedule_time' => '',
+        //             'message' => $val->message,
+        //             'recipients' => [array('recipient_id' => 1, 'dest_addr' => $messaging->castPhone($val->phone))]
+        //         );
+
+        //         //post data
+        //         $response = $messaging->sendSMS($postData);
+        //         $result = json_decode($response);
+
+        //         //check for successful or failure of message
+        //         if ($result->code == 100) {
+        //             //update sms status
+        //             $sms_log = SmsLog::findOrFail($val->id);
+        //             $sms_log->gateway_id = $result->request_id;
+        //             $sms_log->gateway_response = json_encode($result);
+        //             $sms_log->gateway_code = $result->code;
+        //             $sms_log->gateway_message = $result->message;
+        //             $sms_log->status = "SENT";
+        //             $sms_log->save();
+
+        //             //TODO: deduct bundle
+        //         } else {
+        //             //update sms status
+        //             $sms_log = SmsLog::findOrFail($val->id);
+        //             $sms_log->gateway_response = json_encode($result);
+        //             $sms_log->gateway_code = $result->code;
+        //             $sms_log->gateway_message = $result->message;
+        //             $sms_log->status = "REJECTED";
+        //             $sms_log->save();
+        //         }
+        //     }
+        // }
     }
 
     //delivery report
