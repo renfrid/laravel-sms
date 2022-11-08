@@ -31,7 +31,7 @@ class SmsLogController extends Controller
         //has_allowed('roles', 'lists');
 
         //sms logs
-        $sms_logs = SmsLog::all();
+        $sms_logs = SmsLog::paginate(50);
 
         return view('sms_logs.lists', compact('sms_logs', 'title'));
     }
@@ -265,18 +265,29 @@ class SmsLogController extends Controller
             $count = 2;
             $success = 0;
             for ($i = 1; $i < sizeof($row[0]); $i++) {
-                //save to database
-                $sms_log = SmsLog::firstOrNew([
-                    'message_id' => $messageId,
-                    'phone' => '0' . $row[0][$i][0],
-                    'sender' => $sender
-                ]);
-                $sms_log->message = $message;
-                $sms_log->sms_count = 1;
-                $sms_log->schedule = $request->input('schedule');
-                $sms_log->schedule_at = date('Y-m-d H:i:s', strtotime($schedule_at));
-                $sms_log->created_by = Auth::user()->id;
-                $sms_log->save();
+                //check if phone is 10 digits and start with 0
+                if (strlen($row[0][$i][0]) == 10 && substr($row[0][$i][0], 1) == 0)
+                    $phone = $row[0][$i][0];
+                elseif (strlen($row['phone']) == 9)
+                    $phone = '0' . trim($row[0][$i][0]);
+                else
+                    $phone = null;
+
+                //check if phone is not null or ''
+                if ($phone != null || $phone != '') {
+                    //save to database
+                    $sms_log = SmsLog::firstOrNew([
+                        'message_id' => $messageId,
+                        'phone' => $phone,
+                        'sender' => $sender
+                    ]);
+                    $sms_log->message = $message;
+                    $sms_log->sms_count = 1;
+                    $sms_log->schedule = $request->input('schedule');
+                    $sms_log->schedule_at = date('Y-m-d H:i:s', strtotime($schedule_at));
+                    $sms_log->created_by = Auth::user()->id;
+                    $sms_log->save();
+                }
             }
 
             //call background job for sending direct sms

@@ -33,7 +33,7 @@ class ContactController extends Controller
         $title = 'Contacts';
         //has_allowed('roles', 'lists');
 
-        $contacts = Contact::orderBy('name')->paginate(100);
+        $contacts = Contact::orderBy('name')->paginate(50);
 
         //render view
         return view('contacts.lists', compact('title', 'contacts'));

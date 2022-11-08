@@ -20,7 +20,7 @@ class TemplateController extends Controller
         //has_allowed('roles', 'lists');
 
         //templates
-        $templates = Template::all();
+        $templates = Template::paginate(50);
 
         return view('templates.lists', compact('templates', 'title'));
     }

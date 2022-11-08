@@ -80,7 +80,7 @@
                                             <td>
                                                 @if ($value->roles->isNotEmpty())
                                                     @foreach ($value->roles as $val)
-                                                        {{ $val->description }}<br/>
+                                                        {{ $val->description }}<br />
                                                     @endforeach
                                                 @endif
                                             </td>
@@ -109,6 +109,10 @@
                             <!-- end table -->
                         </div>
                         <!-- end table responsive -->
+
+                        <div class="d-flex justify-content-end mt-2">
+                            {!! $users->links() !!}
+                        </div>
                     </div>
                 </div><!-- end card-body -->
             </div><!-- end card -->

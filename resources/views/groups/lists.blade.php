@@ -102,6 +102,10 @@
                             <!-- end table -->
                         </div>
                         <!-- end table responsive -->
+
+                        <div class="d-flex justify-content-end mt-2">
+                            {!! $groups->links() !!}
+                        </div>
                     </div>
                 </div><!-- end card-body -->
             </div><!-- end card -->

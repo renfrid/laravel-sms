@@ -5,11 +5,6 @@ $(document).ready(function () {
     });
 
 
-
-
-
-
-
     /*========================= DELETE ==============================*/
     $('.delete').on('click', function (event) {
         event.preventDefault();

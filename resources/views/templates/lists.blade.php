@@ -80,7 +80,7 @@
                                                 </a>
 
                                                 <a href="{{ route('templates.delete', $value->id) }}"
-                                                    title="Delete Contact" class="btn btn-xss delete">
+                                                    title="Delete" class="btn btn-xss delete">
                                                     <i class="bx bx-trash bx-xs text-danger"></i>
                                                 </a>
                                             </td>
@@ -91,6 +91,10 @@
                             <!-- end table -->
                         </div>
                         <!-- end table responsive -->
+
+                        <div class="d-flex justify-content-end mt-2">
+                            {!! $templates->links() !!}
+                        </div>
                     </div>
                 </div><!-- end card-body -->
             </div><!-- end card -->

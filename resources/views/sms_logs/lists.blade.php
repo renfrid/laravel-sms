@@ -76,6 +76,10 @@
                             <!-- end table -->
                         </div>
                         <!-- end table responsive -->
+
+                        <div class="d-flex justify-content-end mt-2">
+                            {!! $sms_logs->links() !!}
+                        </div>
                     </div>
                 </div><!-- end card-body -->
             </div><!-- end card -->

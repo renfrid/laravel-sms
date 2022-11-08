@@ -27,7 +27,7 @@ class UserController extends Controller
         $title = 'Users';
         //has_allowed('roles', 'lists');
 
-        $users = User::all();
+        $users = User::paginate(50);
 
         //render view
         return view('users.lists', compact('users', 'title'));

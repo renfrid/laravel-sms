@@ -26,7 +26,7 @@ class ContactGroupController extends Controller
         $title = 'Contact Groups';
         //has_allowed('roles', 'lists');
 
-        $groups = Group::orderBy('name')->paginate(100);
+        $groups = Group::orderBy('name')->paginate(50);
 
         //render view
         return view('groups.lists', compact('title', 'groups'));

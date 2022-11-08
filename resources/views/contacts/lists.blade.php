@@ -82,7 +82,7 @@
                                             <td>
                                                 @if ($value->groups->isNotEmpty())
                                                     @foreach ($value->groups as $val)
-                                                        {{ $val->name }}<br/>
+                                                        {{ $val->name }}<br />
                                                     @endforeach
                                                 @endif
                                             </td>
@@ -99,8 +99,8 @@
                                                     <i class="bx bx-edit bx-xs"></i>
                                                 </a>
 
-                                                <a href="{{ route('contacts.delete', $value->id) }}"
-                                                    title="Delete Contact" class="btn btn-xss delete">
+                                                <a href="{{ route('contacts.delete', $value->id) }}" title="Delete Contact"
+                                                    class="btn btn-xss delete">
                                                     <i class="bx bx-trash bx-xs text-danger"></i>
                                                 </a>
                                             </td>
@@ -111,6 +111,10 @@
                             <!-- end table -->
                         </div>
                         <!-- end table responsive -->
+
+                        <div class="d-flex justify-content-end mt-2">
+                            {!! $contacts->links() !!}
+                        </div>
                     </div>
                 </div><!-- end card-body -->
             </div><!-- end card -->
