@@ -37,9 +37,10 @@
                                         Total SMS</p>
                                     <div class="d-flex align-items-center mb-3">
                                         <h4 class="fs-4 flex-grow-1 mb-0"><span class="counter-value"
-                                                data-target="{{ number_format($total_sms) }}"> {{ number_format($total_sms) }}</span>
+                                                data-target="{{ number_format($data['total_sms']) }}">
+                                                {{ number_format($data['total_sms']) }}</span>
                                         </h4>
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -60,7 +61,7 @@
                                     <p class="text-uppercase fw-medium text-muted mb-3">Delivered SMS</p>
                                     <div class="d-flex align-items-center mb-3">
                                         <h4 class="fs-4 flex-grow-1 mb-0"><span class="counter-value"
-                                                data-target="{{ number_format($delivered_sms) }}">{{ number_format($delivered_sms) }}</span>
+                                                data-target="{{ number_format($data['delivered_sms']) }}">{{ number_format($data['delivered_sms']) }}</span>
                                         </h4>
                                     </div>
                                 </div>
@@ -83,7 +84,7 @@
                                         Pending SMS</p>
                                     <div class="d-flex align-items-center mb-3">
                                         <h4 class="fs-4 flex-grow-1 mb-0"><span class="counter-value"
-                                                data-target="{{ number_format($pending_sms) }}">{{ number_format($pending_sms) }}</span>
+                                                data-target="{{ number_format($data['pending_sms']) }}">{{ number_format($data['pending_sms']) }}</span>
                                         </h4>
                                     </div>
                                 </div>
@@ -106,7 +107,7 @@
                                         Rejected SMS</p>
                                     <div class="d-flex align-items-center mb-3">
                                         <h4 class="fs-4 flex-grow-1 mb-0"><span class="counter-value"
-                                                data-target="{{ number_format($rejected_sms) }}">{{ number_format($rejected_sms) }}</span>
+                                                data-target="{{ number_format($data['rejected_sms']) }}">{{ number_format($data['rejected_sms']) }}</span>
                                         </h4>
                                     </div>
                                 </div>
@@ -141,7 +142,9 @@
                             <div class="row g-0 text-center">
                                 <div class="col-6 col-sm-3">
                                     <div class="p-3 border border-dashed border-start-0">
-                                        <h5 class="mb-1"><span class="counter-value" data-target="{{ number_format($total_sms) }}">{{ number_format($total_sms) }}</span></h5>
+                                        <h5 class="mb-1"><span class="counter-value"
+                                                data-target="{{ number_format($data['total_sms']) }}">{{ number_format($data['total_sms']) }}</span>
+                                        </h5>
                                         <p class="text-muted mb-0">Total SMS</p>
                                     </div>
                                 </div>
@@ -149,7 +152,8 @@
                                 <div class="col-6 col-sm-3">
                                     <div class="p-3 border border-dashed border-start-0">
                                         <h5 class="mb-1 text-success"><span class="counter-value"
-                                                data-target="{{ number_format($delivered_sms) }}">{{ number_format($delivered_sms) }}</span></h5>
+                                                data-target="{{ number_format($data['delivered_sms']) }}">{{ number_format($data['delivered_sms']) }}</span>
+                                        </h5>
                                         <p class="text-muted mb-0">Delivered SMS</p>
                                     </div>
                                 </div>
@@ -157,7 +161,8 @@
                                 <div class="col-6 col-sm-3">
                                     <div class="p-3 border border-dashed border-start-0">
                                         <h5 class="mb-1 text-warning"><span class="counter-value"
-                                                data-target="{{ number_format($pending_sms) }}">{{ number_format($pending_sms) }}</span></h5>
+                                                data-target="{{ number_format($data['pending_sms']) }}">{{ number_format($data['pending_sms']) }}</span>
+                                        </h5>
                                         <p class="text-muted mb-0">Pending SMS</p>
                                     </div>
                                 </div>
@@ -165,7 +170,8 @@
                                 <div class="col-6 col-sm-3">
                                     <div class="p-3 border border-dashed border-start-0 border-end-0">
                                         <h5 class="mb-1 text-danger"><span class="counter-value"
-                                                data-target="{{ number_format($rejected_sms) }}">{{ number_format($rejected_sms) }}</span></h5>
+                                                data-target="{{ number_format($data['rejected_sms']) }}">{{ number_format($data['rejected_sms']) }}</span>
+                                        </h5>
                                         <p class="text-muted mb-0">Rejected SMS</p>
                                     </div>
                                 </div>
@@ -174,9 +180,7 @@
                         </div><!-- end card header -->
                         <div class="card-body p-0 pb-2">
                             <div>
-                                <div id="projects-overview-chart"
-                                    data-colors='["--vz-primary", "--vz-warning", "--vz-success"]' dir="ltr"
-                                    class="apex-charts"></div>
+                                <div id="delivery-status-chart" class="apex-charts"></div>
                             </div>
                         </div><!-- end card body -->
                     </div><!-- end card -->
@@ -194,8 +198,6 @@
                         <input type="text" class="form-control" data-provider="flatpickr" data-date-format="d M, Y"
                             data-deafult-date="today" data-inline-date="true">
                     </div>
-
-
 
 
                     {{-- <div class="mini-stats-wid d-flex align-items-center mt-3">
@@ -300,7 +302,5 @@
                 </div><!-- end card body -->
             </div><!-- end card -->
         </div><!-- end col -->
-
-
     </div><!-- end row -->
 @endsection

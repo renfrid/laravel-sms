@@ -83,7 +83,7 @@
     <script src="{{ URL::asset('assets/libs/apexcharts/apexcharts.min.js') }}"></script>
 
     <!-- projects js -->
-    <script src="{{ URL::asset('assets/js/pages/dashboard-projects.init.js') }}"></script>
+    <script src="{{ URL::asset('assets/js/charts/dashboard.js') }}"></script>
 
     <!-- App js -->
     {{-- <script src="assets/js/app.js"></script> --}}

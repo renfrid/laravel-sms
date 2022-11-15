@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\DashboardChartController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ContactGroupController;
@@ -80,3 +81,6 @@ Route::resources([
     'senders' => SenderController::class,
     'templates' => TemplateController::class,
 ]);
+
+//charts
+Route::get('api/dashboard/monthly_status', [DashboardChartController::class, 'monthly_status']);

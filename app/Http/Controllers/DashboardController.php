@@ -17,18 +17,25 @@ class DashboardController extends Controller
         $title = 'Dashboard';
 
         //total sms
-        $total_sms = SmsLog::count();
+        $all_sms = SmsLog::count();
 
         //delivered sms
-        $delivered_sms = SmsLog::where(['status' => 'DELIVERED'])->count();
+        $all_delivered_sms = SmsLog::where(['status' => 'DELIVERED'])->count();
 
         //pending sms
-        $pending_sms = SmsLog::where(['status' => 'PENDING'])->count();
+        $all_pending_sms = SmsLog::where(['status' => 'PENDING'])->count();
 
         //rejected sms
-        $rejected_sms = SmsLog::where(['status' => 'REJECTED'])->count();
+        $all_rejected_sms = SmsLog::where(['status' => 'REJECTED'])->count();
+
+        $data = [
+            'total_sms' => $all_sms,
+            'delivered_sms' => $all_delivered_sms,
+            'pending_sms' => $all_pending_sms,
+            'rejected_sms' => $all_rejected_sms
+        ];
 
         //render view
-        return view('dashboard', compact('title', 'total_sms','delivered_sms', 'pending_sms', 'rejected_sms'));
+        return view('dashboard', compact('title', 'data'));
     }
 }
