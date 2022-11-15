@@ -338,43 +338,4 @@ class SmsLogController extends Controller
         //redirect 
         return Redirect::route('sms-logs.file-sms')->with('success', 'File sms processed successfully!');
     }
-
-    //send schedule sms
-    function send_schedule_sms()
-    {
-    }
-
-    //delivery report
-    function delivery_report()
-    {
-        //limit
-        $limit = 100;
-        $no_of_sent_sms = SmsLog::where(['status' => 'SENT'])->count();
-
-        //looping sms
-        $looping = $no_of_sent_sms / $limit;
-
-        //iterate looping
-        for ($i = 1; $i <= ceil($looping); $i++) {
-            $recipients = SmsLog::select('id', 'gateway_id', 'phone')->where(['status' => 'SENT'])->take($limit)->get();
-
-            foreach ($recipients as $val) {
-                //create arr data
-                $postData = array(
-                    'request_id' => $val->gateway_id,
-                    'dest_addr' => $this->messaging->castPhone($val->phone)
-                );
-
-                //post data
-                $response = $this->messaging->deliveryReport($postData);
-                $result = json_decode($response);
-
-                //check for successful or failure of message
-                $sms_log = SmsLog::findOrFail($val->id);
-                $sms_log->status = $result->status;
-                $sms_log->save();
-            }
-        }
-        echo response()->json(["error" => false, "success_msg" => "Delivery report success!"]);
-    }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ContactGroupController;
+use App\Http\Controllers\CronJobController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\RoleController;
@@ -46,7 +47,7 @@ Route::get('sms-logs/file-sms', [SmsLogController::class, 'file_sms'])->name('sm
 Route::post('sms-logs/send-file-sms', [SmsLogController::class, 'send_file_sms'])->name('sms-logs.send-file-sms');
 
 //delivery report
-Route::get('sms-logs/delivery-report', [SmsLogController::class, 'delivery_report'])->name('sms-logs.delivery-report');
+Route::get('cron-jobs/delivery-report', [CronJobController::class, 'delivery_report'])->name('cron-jobs.delivery-report');
 
 //templates
 Route::get('templates/{id}/delete', [TemplateController::class, 'destroy'])->name('templates.delete');
