@@ -143,6 +143,13 @@ class ContactGroupController extends Controller
         $group = Group::findOrFail($id);
 
         if ($del = $group->delete()) {
+            //find all contact in this group
+            $group_contacts = ContactGroup::where(['group_id' => $id])->get();
+
+            foreach ($group_contacts as $val) {
+                //delete the contact
+                Contact::where(['id' => $val->contact_id])->delete();
+            }
             //delete contact group
             $group->contacts()->detach();
 

@@ -53,6 +53,7 @@ Route::get('templates/{id}/delete', [TemplateController::class, 'destroy'])->nam
 Route::get('templates/{id}/get-data', [TemplateController::class, 'get_data'])->name('templates.get-data');
 
 //contact
+Route::any('contacts/lists', [ContactController::class, 'lists'])->name('contacts.lists');
 Route::get('contacts/import', [ContactController::class, 'import'])->name('contacts.import');
 Route::post('contacts/store-import', [ContactController::class, 'store_import'])->name('contacts.store-import');
 Route::get('contacts/{id}/delete', [ContactController::class, 'destroy'])->name('contacts.delete');
@@ -64,8 +65,6 @@ Route::post('contact-groups/{id}/assign-contacts', [ContactGroupController::clas
 
 Route::get('contact-groups/assign-contacts-groups', [ContactGroupController::class, 'assign_contacts_groups'])->name('contacts-groups.assign-contacts-groups');
 Route::post('contact-groups/store-contacts-groups', [ContactGroupController::class, 'store_contacts_groups'])->name('contacts-groups.store-contacts-groups');
-
-
 
 //users
 Route::get('users/{id}/delete', [UserController::class, 'destroy'])->name('users.delete');

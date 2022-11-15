@@ -2,8 +2,6 @@
 
 namespace App\Classes;
 
-use function PHPUnit\Framework\isEmpty;
-
 class Messaging
 {
     private $API_BASE_URL;
@@ -115,7 +113,7 @@ class Messaging
     //add 0 on the mobile phone
     function addZeroOnPhone($mobile)
     {
-        if (!isEmpty($mobile)) {
+        if (!empty($mobile)) {
             if (strlen($mobile) == 9) {
                 $phone = '0' . $mobile;
             } else {

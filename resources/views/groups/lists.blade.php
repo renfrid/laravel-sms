@@ -24,7 +24,7 @@
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-header align-items-center d-flex">
-                    <h4 class="card-title mb-0 flex-grow-1">List of contact groups</h4>
+                    <h4 class="card-title mb-0 flex-grow-1">Contact Groups Lists</h4>
                     <div class="flex-shrink-0">
                         <a href="{{ route('contact-groups.create') }}" class="btn btn-outline-primary btn-sm">
                             <i class="fa fa-plus"></i> Create New

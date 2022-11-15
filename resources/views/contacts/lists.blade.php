@@ -23,8 +23,96 @@
     <div class="row project-wrapper">
         <div class="col-xl-12">
             <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            {!! Form::open(['url' => route('contacts.lists'), 'method' => 'POST', 'class' => 'form-horizontal']) !!}
+                            {{ Form::token() }}
+
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="mb-3">
+                                        {{ Form::date('start_at', old('start_at'), ['placeholder="Start Date..."', 'class="form-control"']) }}
+                                    </div>
+                                </div>
+                                <!--./col -->
+
+                                <div class="col-lg-3">
+                                    <div class="mb-3">
+                                        {{ Form::date('end_at', old('end_at'), ['placeholder="End Date..."', 'class="form-control"']) }}
+                                    </div>
+                                </div>
+                                <!--./col -->
+
+                                <div class="col-lg-3">
+                                    <div class="mb-3">
+                                        @php
+                                            $_options = [];
+                                        @endphp
+
+                                        @foreach ($groups as $val)
+                                            @php
+                                                $_options[$val->id] = $val->name;
+                                            @endphp
+                                        @endforeach
+
+                                        @php
+                                            $_options = ['' => 'Group'] + $_options;
+                                        @endphp
+
+                                        {{ Form::select('group_id', $_options, old('group_id'), ['class' => 'form-control']) }}
+                                    </div>
+                                </div>
+                                <!--./col -->
+
+                                <div class="col-lg-3">
+                                    <div class="mb-3">
+                                        @php
+                                            $options = [
+                                                'Active' => 'Active',
+                                                'Inactive' => 'Inactive'
+                                            ];
+                                            $options = ['' => 'Status'] + $options;
+                                        @endphp
+
+                                        {{ Form::select('status', $options, old('status'), ['class' => 'form-control']) }}
+                                    </div>
+                                </div>
+                                <!--./col -->
+                            </div>
+                            <!--./row -->
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        {{ Form::text('keyword', old('keyword'), ['class="form-control"', 'placeholder="Search by name or phone..."']) }}
+                                    </div>
+                                </div>
+                                <!--./col -->
+
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <div class="text-sm-end d-none d-sm-block">
+                                            <button type="submit" name="filter" class="btn btn-secondary">
+                                                <i class="bx bx-search"></i> Filter
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--./col -->
+                            </div>
+                            <!--./row -->
+                            {{ Form::close() }}
+                        </div>
+                        <!--./col-lg-12 -->
+                    </div>
+                    <!--./row -->
+                </div>
+            </div>
+
+            <div class="card">
                 <div class="card-header align-items-center d-flex">
-                    <h4 class="card-title mb-0 flex-grow-1">List of contacts</h4>
+                    <h4 class="card-title mb-0 flex-grow-1">Contacts Lists</h4>
                     <div class="flex-shrink-0">
                         <a href="{{ route('contacts.create') }}" class="btn btn-outline-primary btn-sm">
                             <i class="fa fa-plus"></i> Register New

@@ -24,7 +24,7 @@
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-header align-items-center d-flex">
-                    <h4 class="card-title mb-0 flex-grow-1">List of message templates</h4>
+                    <h4 class="card-title mb-0 flex-grow-1">Message Templates Lists</h4>
                     <div class="flex-shrink-0">
                         <a href="{{ route('templates.create') }}" class="btn btn-outline-primary btn-sm">
                             <i class="fa fa-plus"></i> Create New

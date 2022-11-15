@@ -28,15 +28,55 @@ class ContactController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function lists(Request $request)
     {
         $title = 'Contacts';
         //has_allowed('roles', 'lists');
 
-        $contacts = Contact::orderBy('name')->paginate(50);
+        //contact
+        $contacts = Contact::select('contacts.id', 'contacts.name', 'contacts.phone', 'contacts.created_at')->orderBy('name');
+
+        if (isset($_POST['filter'])) {
+            $start_at = $request->input('start_at');
+            $end_at = $request->input('end_at');
+            $group_id = $request->input('group_id');
+            $status = $request->input('status');
+            $keyword = $request->input('keyword');
+
+            //start data and end date
+            if ($start_at != null && $end_at != null) {
+                $start_at = date('Y-m-d', strtotime($start_at));
+                $end_at = date('Y-m-d', strtotime($end_at));
+
+                $contacts = $contacts->whereBetween('contacts.created_at', [$start_at, $end_at]);
+            }
+
+            //group_id
+            if ($group_id != null) {
+                $contacts = $contacts->join('contact_group', 'contact_group.contact_id', '=', 'contacts.id')
+                    ->where('contact_group.group_id', $group_id);
+            }
+
+            //keyword
+            if ($keyword != null) {
+                $contacts = $contacts->where(function ($query) use ($keyword) {
+                    $query->orWhere('contacts.name', 'LIKE', "%$keyword%")
+                        ->orWhere('contacts.phone', 'LIKE', "%$keyword%");
+                });
+            }
+
+            //contacts
+            $contacts = $contacts->paginate(100);
+        } else {
+            //contacts
+            $contacts = $contacts->paginate(100);
+        }
+
+        //populate data
+        $groups = Group::all();
 
         //render view
-        return view('contacts.lists', compact('title', 'contacts'));
+        return view('contacts.lists', compact('title', 'contacts', 'groups'));
     }
 
     /**

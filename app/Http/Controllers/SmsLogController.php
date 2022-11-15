@@ -25,15 +25,47 @@ class SmsLogController extends Controller
     }
 
     //lists
-    public function lists()
+    public function lists(Request $request)
     {
         $title = 'SMS Logs';
         //has_allowed('roles', 'lists');
 
         //sms logs
-        $sms_logs = SmsLog::paginate(50);
+        $sms_logs = SmsLog::orderBy('created_at');
 
-        return view('sms_logs.lists', compact('sms_logs', 'title'));
+        if (isset($_POST['filter'])) {
+            $start_at = $request->input('start_at');
+            $end_at = $request->input('end_at');
+            $sender = $request->input('sender');
+            $status = $request->input('status');
+
+            //start data and end date
+            if ($start_at != null && $end_at != null) {
+                $start_at = date('Y-m-d', strtotime($start_at));
+                $end_at = date('Y-m-d', strtotime($end_at));
+
+                $sms_logs = $sms_logs->whereBetween('sms_logs.created_at', [$start_at, $end_at]);
+            }
+
+            //sender
+            if ($sender != null)
+                $sms_logs = $sms_logs->where('sms_logs.sender', $sender);
+
+            //status
+            if ($status != null)
+                $sms_logs = $sms_logs->where('sms_logs.status', $status);
+
+            //sms logs
+            $sms_logs = $sms_logs->paginate(100);
+        } else {
+            //sms logs
+            $sms_logs = $sms_logs->paginate(100);
+        }
+
+        //populate data
+        $senders = Sender::all();
+
+        return view('sms_logs.lists', compact('title', 'sms_logs', 'senders'));
     }
 
     //send quick sms
@@ -310,54 +342,6 @@ class SmsLogController extends Controller
     //send schedule sms
     function send_schedule_sms()
     {
-        //limit
-        $limit = 100;
-        $no_of_pending_sms = SmsLog::where(['schedule' => 1, 'status' => 'PENDING'])->count();
-
-        //looping sms
-        $looping = $no_of_pending_sms / $limit;
-
-        //iterate looping
-        // for ($i = 1; $i <= ceil($looping); $i++) {
-        //     $recipients = SmsLog::select('id', 'phone', 'sender', 'message')->where(['schedule' => 1, 'status' => 'PENDING'])->take($limit)->get();
-
-        //     foreach ($recipients as $val) {
-        //         //create arr data
-        //         $postData = array(
-        //             'source_addr' => $val->sender,
-        //             'encoding' => 0,
-        //             'schedule_time' => '',
-        //             'message' => $val->message,
-        //             'recipients' => [array('recipient_id' => 1, 'dest_addr' => $messaging->castPhone($val->phone))]
-        //         );
-
-        //         //post data
-        //         $response = $messaging->sendSMS($postData);
-        //         $result = json_decode($response);
-
-        //         //check for successful or failure of message
-        //         if ($result->code == 100) {
-        //             //update sms status
-        //             $sms_log = SmsLog::findOrFail($val->id);
-        //             $sms_log->gateway_id = $result->request_id;
-        //             $sms_log->gateway_response = json_encode($result);
-        //             $sms_log->gateway_code = $result->code;
-        //             $sms_log->gateway_message = $result->message;
-        //             $sms_log->status = "SENT";
-        //             $sms_log->save();
-
-        //             //TODO: deduct bundle
-        //         } else {
-        //             //update sms status
-        //             $sms_log = SmsLog::findOrFail($val->id);
-        //             $sms_log->gateway_response = json_encode($result);
-        //             $sms_log->gateway_code = $result->code;
-        //             $sms_log->gateway_message = $result->message;
-        //             $sms_log->status = "REJECTED";
-        //             $sms_log->save();
-        //         }
-        //     }
-        // }
     }
 
     //delivery report
@@ -375,7 +359,6 @@ class SmsLogController extends Controller
             $recipients = SmsLog::select('id', 'gateway_id', 'phone')->where(['status' => 'SENT'])->take($limit)->get();
 
             foreach ($recipients as $val) {
-                //array('request_id' => $request_id,'dest_addr' => $dest_addr);
                 //create arr data
                 $postData = array(
                     'request_id' => $val->gateway_id,

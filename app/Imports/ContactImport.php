@@ -30,7 +30,7 @@ class ContactImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows)
     {
         Validator::make($rows->toArray(), [
-            '*.name' => 'required',
+            //'*.name' => 'required',
             '*.phone' => ['required']
         ])->validate();
 

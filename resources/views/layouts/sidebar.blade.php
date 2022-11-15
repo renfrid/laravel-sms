@@ -83,7 +83,7 @@
                     <div class="collapse menu-dropdown" id="sidebarContacts">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{ route('contacts.index') }}" class="nav-link"
+                                <a href="{{ route('contacts.lists') }}" class="nav-link"
                                     data-key="t-starter">Contacts</a>
                             </li>
                             <li class="nav-item">
