@@ -2,6 +2,8 @@
 
 namespace App\Classes;
 
+use Illuminate\Support\Facades\Log;
+
 class Messaging
 {
     private $API_BASE_URL;
@@ -15,14 +17,17 @@ class Messaging
         $this->API_BASE_URL = 'https://apisms.beem.africa/v1/send';
         $this->API_DELIVERY_URL = 'https://dlrapi.beem.africa/public/v1/delivery-reports';
 
-        $this->API_KEY = "694e9d101ab76d66";
-        $this->SECRET_KEY = "YTFjM2E4MmNhMmU0NWY4Nzk1NTYzOTkwNzExMWI0YmM1YWY0MGNkM2VkMDE2NjgxY2E2MDk1YzJhZTRkZWM3YQ==";
+        $this->API_KEY = env('API_KEY');
+        $this->SECRET_KEY = env('SECRET_KEY');
         $this->M_CODE = "255";
     }
 
     //action to send notification
     function sendSMS($arr_data)
     {
+        Log::info("api key => " . $this->API_KEY);
+        Log::info("secret key => " . $this->SECRET_KEY);
+
         $ch = curl_init($this->API_BASE_URL);
         error_reporting(E_ALL);
         ini_set('display_errors', 1);
@@ -39,6 +44,8 @@ class Messaging
         ));
 
         $response = curl_exec($ch);
+
+        var_dump($response);
 
         if ($response === FALSE) {
             echo $response;
