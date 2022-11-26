@@ -39,7 +39,6 @@ class Messaging
                 $postData = array(
                     'source_addr' => $val->sender,
                     'encoding' => 0,
-                    // 'schedule_time' => '',
                     'message' => $val->message,
                     'recipients' => [array('recipient_id' => 1, 'dest_addr' => $this->castPhone($val->phone))]
                 );
@@ -84,9 +83,6 @@ class Messaging
     //action to send notification
     function sendSMS($arr_data)
     {
-        Log::info("api key => ".$this->API_KEY);
-        Log::info("secret key => ". $this->SECRET_KEY);
-
         // Setup cURL
         $ch = curl_init('https://apisms.beem.africa/v1/send');
         error_reporting(E_ALL);

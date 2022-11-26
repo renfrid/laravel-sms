@@ -132,18 +132,8 @@ class SmsLogController extends Controller
             $sms_log->save();
         }
 
-        //call background job for sending direct sms
+        //send instant
         $this->messaging->actionSendSMS($messageId);
-        //schedule = null
-        // $schedule = $request->input('schedule');
-
-        // $data = [
-        //     "schedule" => $schedule,
-        //     "message_id" => $messageId,
-        //     "sender" => $sender,
-        //     "message" => $message
-        // ];
-        // dispatch(new SendSMSJob($data));
 
         //redirect 
         return Redirect::route('sms-logs.quick-sms')->with('success', 'Quick sms processed successfully!');
@@ -215,18 +205,6 @@ class SmsLogController extends Controller
                 $sms_log->save();
             }
         }
-
-        //call background job for sending direct sms
-        //schedule = null
-        $schedule = $request->input('schedule');
-
-        $data = [
-            "schedule" => $schedule,
-            "message_id" => $messageId,
-            "sender" => $sender,
-            "message" => $message
-        ];
-        dispatch(new SendSMSJob($data));
 
         //redirect 
         return Redirect::route('sms-logs.group-sms')->with('success', 'Group sms processed successfully!');
@@ -325,107 +303,18 @@ class SmsLogController extends Controller
 
             //call background job for sending direct sms
             //schedule = null
-            $schedule = $request->input('schedule');
+            // $schedule = $request->input('schedule');
 
-            $data = [
-                "schedule" => $schedule,
-                "message_id" => $messageId,
-                "sender" => $sender,
-                "message" => $message
-            ];
-            dispatch(new SendSMSJob($data));
+            // $data = [
+            //     "schedule" => $schedule,
+            //     "message_id" => $messageId,
+            //     "sender" => $sender,
+            //     "message" => $message
+            // ];
+            // dispatch(new SendSMSJob($data));
         }
 
         //redirect 
         return Redirect::route('sms-logs.file-sms')->with('success', 'File sms processed successfully!');
-    }
-
-    //send sms now
-    function send_now()
-    {
-        //call messaging class
-        $messaging = new Messaging();
-
-        //data submitted
-        $messageId = "ATP66ZXWCCR";
-        $message = "Hello there, how are you!";
-        $sender = "TAARIFA";
-
-        //limit
-        $limit = 100;
-        $no_of_pending_sms = SmsLog::where(['message_id' => $messageId, 'status' => 'REJECTED'])->count();
-
-        //looping sms
-        $looping = $no_of_pending_sms / $limit;
-
-        //iterate looping
-        for ($i = 1; $i <= ceil($looping); $i++) {
-            $recipients = SmsLog::select('id', 'phone', 'schedule_at')->where(['message_id' => $messageId, 'status' => 'REJECTED'])->take($limit)->get();
-
-            foreach ($recipients as $val) {
-                //create arr data
-                $postData = array(
-                    'source_addr' => $sender,
-                    'encoding' => 0,
-                    'schedule_time' => '',
-                    'message' => $message,
-                    'recipients' => [array('recipient_id' => 1, 'dest_addr' => $messaging->castPhone($val->phone))]
-                );
-
-                echo "<pre>";
-                print_r($postData);
-
-                //post data
-                $response = $messaging->sendSMS($postData);
-                $result = json_decode($response);
-
-                echo "<pre>";
-                print_r($result);
-
-                //check for successful or failure of message
-                if ($result->code == 100) {
-                    //update sms status
-                    $sms_log = SmsLog::findOrFail($val->id);
-                    $sms_log->gateway_id = $result->request_id;
-                    $sms_log->gateway_response = json_encode($result);
-                    $sms_log->gateway_code = $result->code;
-                    $sms_log->gateway_message = $result->message;
-                    $sms_log->status = "SENT";
-                    $sms_log->save();
-
-                    //TODO: deduct bundle
-                } else {
-                    //update sms status
-                    $sms_log = SmsLog::findOrFail($val->id);
-                    $sms_log->gateway_response = json_encode($result);
-                    $sms_log->gateway_code = $result->code;
-                    $sms_log->gateway_message = $result->message;
-                    $sms_log->status = "REJECTED";
-                    $sms_log->save();
-                }
-            }
-        }
-    }
-
-
-    //send test
-    function test_sms()
-    {
-        //create arr data
-        $postData = array(
-            'source_addr' => 'TAARIFA',
-            'encoding' => 0,
-            'schedule_time' => '',
-            'message' => "Test message",
-            'recipients' => [array('recipient_id' => 1, 'dest_addr' => '255717705746')]
-        );
-        //call messaging class
-        $messaging = new Messaging();
-
-        //post data
-        $response = $messaging->sendSMS($postData);
-        $result = json_decode($response);
-
-        var_dump($result);
     }
 }

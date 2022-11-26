@@ -38,9 +38,6 @@ Route::get('logout', [LoginController::class, 'logout'])->name('logout');
 //sms logs
 Route::any('sms-logs/lists', [SmsLogController::class, 'lists'])->name('sms-logs.lists');
 //quick sms
-Route::get('sms-logs/test-sms', [SmsLogController::class, 'test_sms'])->name('sms-logs.test-sms');
-Route::get('sms-logs/send-now', [SmsLogController::class, 'send_now'])->name('sms-logs.send-now');
-
 Route::get('sms-logs/quick-sms', [SmsLogController::class, 'quick_sms'])->name('sms-logs.quick-sms');
 Route::post('sms-logs/send-quick-sms', [SmsLogController::class, 'send_quick_sms'])->name('sms-logs.send-quick-sms');
 //group sms
@@ -50,7 +47,10 @@ Route::post('sms-logs/send-group-sms', [SmsLogController::class, 'send_group_sms
 Route::get('sms-logs/file-sms', [SmsLogController::class, 'file_sms'])->name('sms-logs.file-sms');
 Route::post('sms-logs/send-file-sms', [SmsLogController::class, 'send_file_sms'])->name('sms-logs.send-file-sms');
 
-//delivery report
+//cron for sending sms
+Route::get('cron-jobs/send-process', [CronJobController::class, 'send_process'])->name('cron-jobs.send-process');
+
+//cron for delivery report
 Route::get('cron-jobs/delivery-report', [CronJobController::class, 'delivery_report'])->name('cron-jobs.delivery-report');
 
 //templates
