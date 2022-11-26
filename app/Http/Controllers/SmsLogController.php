@@ -343,8 +343,8 @@ class SmsLogController extends Controller
     //send test
     function test_sms()
     {
-        $API_KEY = env('API_KEY');
-        $SECRET_KEY = env('SECRET_KEY');
+        $API_KEY ='694e9d101ab76d66';
+        $SECRET_KEY = 'YTFjM2E4MmNhMmU0NWY4Nzk1NTYzOTkwNzExMWI0YmM1YWY0MGNkM2VkMDE2NjgxY2E2MDk1YzJhZTRkZWM3YQ==';
 
         echo "api key => " .$API_KEY;
         echo "<br />";
