@@ -343,13 +343,6 @@ class SmsLogController extends Controller
     //send test
     function test_sms()
     {
-        $API_KEY ='694e9d101ab76d66';
-        $SECRET_KEY = 'YTFjM2E4MmNhMmU0NWY4Nzk1NTYzOTkwNzExMWI0YmM1YWY0MGNkM2VkMDE2NjgxY2E2MDk1YzJhZTRkZWM3YQ==';
-
-        echo "api key => " .$API_KEY;
-        echo "<br />";
-        echo "secret key => " . $SECRET_KEY;
-
         //create arr data
         $postData = array(
             'source_addr' => 'TAARIFA',
@@ -358,30 +351,13 @@ class SmsLogController extends Controller
             'message' => "Test message",
             'recipients' => [array('recipient_id' => 1, 'dest_addr' => '255717705746')]
         );
+        //call messaging class
+        $messaging = new Messaging();
 
-        $ch = curl_init('https://apisms.beem.africa/v1/send');
-        error_reporting(E_ALL);
-        ini_set('display_errors', 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt_array($ch, array(
-            CURLOPT_POST => TRUE,
-            CURLOPT_RETURNTRANSFER => TRUE,
-            CURLOPT_HTTPHEADER => array(
-                'Authorization:Basic ' . base64_encode("$API_KEY:$SECRET_KEY"),
-                'Content-Type: application/json'
-            ),
-            CURLOPT_POSTFIELDS => json_encode($postData)
-        ));
+        //post data
+        $response = $messaging->sendSMS($postData);
+        $result = json_decode($response);
 
-        $response = curl_exec($ch);
-
-        echo "<pre>";
-        print_r($response);
-
-        if ($response === FALSE) {
-            echo $response;
-            die(curl_error($ch));
-        }
+        var_dump($result);
     }
 }
