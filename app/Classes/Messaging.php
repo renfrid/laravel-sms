@@ -2,6 +2,7 @@
 
 namespace App\Classes;
 
+use App\Models\SmsLog;
 use Illuminate\Support\Facades\Log;
 
 class Messaging
@@ -14,16 +15,77 @@ class Messaging
 
     public function __construct()
     {
-        $this->API_KEY ='694e9d101ab76d66';
+        $this->API_KEY = '694e9d101ab76d66';
         $this->SECRET_KEY = 'YTFjM2E4MmNhMmU0NWY4Nzk1NTYzOTkwNzExMWI0YmM1YWY0MGNkM2VkMDE2NjgxY2E2MDk1YzJhZTRkZWM3YQ==';
         $this->API_DELIVERY_URL = 'https://dlrapi.beem.africa/public/v1/delivery-reports';
+    }
+
+    //action to send sms
+    function actionSendSMS($messageId)
+    {
+        //limit
+        $limit = 100;
+        $no_of_pending_sms = SmsLog::where(['message_id' => $messageId, 'status' => 'PENDING'])->count();
+
+        //looping sms
+        $looping = $no_of_pending_sms / $limit;
+
+        //iterate looping
+        for ($i = 1; $i <= ceil($looping); $i++) {
+            $recipients = SmsLog::select('id', 'phone', 'message', 'sender', 'schedule', 'schedule_at')->where(['message_id' => $messageId, 'status' => 'PENDING'])->take($limit)->get();
+
+            foreach ($recipients as $val) {
+                //create arr data
+                $postData = array(
+                    'source_addr' => $val->sender,
+                    'encoding' => 0,
+                    // 'schedule_time' => '',
+                    'message' => $val->message,
+                    'recipients' => [array('recipient_id' => 1, 'dest_addr' => $this->castPhone($val->phone))]
+                );
+
+                //check for schedule
+                if ($val->schedule == 1)
+                    $postData['schedule_time'] = $val->schedule_at;
+                else
+                    $postData['schedule_time'] = '';
+
+                Log::debug("post data => ", $postData);
+
+                //post data
+                $response = $this->sendSMS($postData);
+                $result = json_decode($response);
+
+                //check for successful or failure of message
+                if ($result->code == 100) {
+                    //update sms status
+                    $sms_log = SmsLog::findOrFail($val->id);
+                    $sms_log->gateway_id = $result->request_id;
+                    $sms_log->gateway_response = json_encode($result);
+                    $sms_log->gateway_code = $result->code;
+                    $sms_log->gateway_message = $result->message;
+                    $sms_log->status = "SENT";
+                    $sms_log->save();
+
+                    //TODO: deduct bundle
+                } else {
+                    //update sms status
+                    $sms_log = SmsLog::findOrFail($val->id);
+                    $sms_log->gateway_response = json_encode($result);
+                    $sms_log->gateway_code = $result->code;
+                    $sms_log->gateway_message = $result->message;
+                    $sms_log->status = "REJECTED";
+                    $sms_log->save();
+                }
+            }
+        }
     }
 
     //action to send notification
     function sendSMS($arr_data)
     {
-        Log::info("api key", $this->API_KEY);
-        Log::info("secret key", $this->SECRET_KEY);
+        Log::info("api key => ".$this->API_KEY);
+        Log::info("secret key => ". $this->SECRET_KEY);
 
         // Setup cURL
         $ch = curl_init('https://apisms.beem.africa/v1/send');
@@ -48,8 +110,6 @@ class Messaging
             die(curl_error($ch));
         }
 
-        Log::debug("response", json_encode($response));
-        
         //resurn repsonse
         return $response;
     }

@@ -133,16 +133,17 @@ class SmsLogController extends Controller
         }
 
         //call background job for sending direct sms
+        $this->messaging->actionSendSMS($messageId);
         //schedule = null
-        $schedule = $request->input('schedule');
+        // $schedule = $request->input('schedule');
 
-        $data = [
-            "schedule" => $schedule,
-            "message_id" => $messageId,
-            "sender" => $sender,
-            "message" => $message
-        ];
-        dispatch(new SendSMSJob($data));
+        // $data = [
+        //     "schedule" => $schedule,
+        //     "message_id" => $messageId,
+        //     "sender" => $sender,
+        //     "message" => $message
+        // ];
+        // dispatch(new SendSMSJob($data));
 
         //redirect 
         return Redirect::route('sms-logs.quick-sms')->with('success', 'Quick sms processed successfully!');
