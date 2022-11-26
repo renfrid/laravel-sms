@@ -346,9 +346,9 @@ class SmsLogController extends Controller
         $API_KEY = env('API_KEY');
         $SECRET_KEY = env('SECRET_KEY');
 
-        echo $API_KEY;
+        echo "api key => " .$API_KEY;
         echo "<br />";
-        echo $SECRET_KEY;
+        echo "secret key => " . $SECRET_KEY;
 
         //create arr data
         $postData = array(
@@ -376,7 +376,8 @@ class SmsLogController extends Controller
 
         $response = curl_exec($ch);
 
-        var_dump($response);
+        echo "<pre>";
+        print_r($response);
 
         if ($response === FALSE) {
             echo $response;
