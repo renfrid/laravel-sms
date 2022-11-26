@@ -73,7 +73,7 @@ class SendSMSJob implements ShouldQueue
                 else
                     $postData['schedule_time'] = '';
 
-                Log::info("post data => " , json_encode($postData));    
+                Log::debug("post data => " , json_encode($postData));    
 
                 //post data
                 $response = $messaging->sendSMS($postData);
