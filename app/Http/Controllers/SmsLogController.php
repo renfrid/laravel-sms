@@ -338,4 +338,49 @@ class SmsLogController extends Controller
         //redirect 
         return Redirect::route('sms-logs.file-sms')->with('success', 'File sms processed successfully!');
     }
+
+
+    //send test
+    function test_sms()
+    {
+        $API_KEY = env('API_KEY');
+        $SECRET_KEY = env('SECRET_KEY');
+
+        echo $API_KEY;
+        echo "<br />";
+        echo $SECRET_KEY;
+
+        //create arr data
+        $postData = array(
+            'source_addr' => 'TAARIFA',
+            'encoding' => 0,
+            'schedule_time' => '',
+            'message' => "Test message",
+            'recipients' => [array('recipient_id' => 1, 'dest_addr' => '255717705746')]
+        );
+
+        $ch = curl_init('https://apisms.beem.africa/v1/send');
+        error_reporting(E_ALL);
+        ini_set('display_errors', 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt_array($ch, array(
+            CURLOPT_POST => TRUE,
+            CURLOPT_RETURNTRANSFER => TRUE,
+            CURLOPT_HTTPHEADER => array(
+                'Authorization:Basic ' . base64_encode("$API_KEY:$SECRET_KEY"),
+                'Content-Type: application/json'
+            ),
+            CURLOPT_POSTFIELDS => json_encode($postData)
+        ));
+
+        $response = curl_exec($ch);
+
+        var_dump($response);
+
+        if ($response === FALSE) {
+            echo $response;
+            die(curl_error($ch));
+        }
+    }
 }

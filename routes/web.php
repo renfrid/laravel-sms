@@ -38,6 +38,8 @@ Route::get('logout', [LoginController::class, 'logout'])->name('logout');
 //sms logs
 Route::any('sms-logs/lists', [SmsLogController::class, 'lists'])->name('sms-logs.lists');
 //quick sms
+Route::get('sms-logs/test-sms', [SmsLogController::class, 'test_sms'])->name('sms-logs.test-sms');
+
 Route::get('sms-logs/quick-sms', [SmsLogController::class, 'quick_sms'])->name('sms-logs.quick-sms');
 Route::post('sms-logs/send-quick-sms', [SmsLogController::class, 'send_quick_sms'])->name('sms-logs.send-quick-sms');
 //group sms
