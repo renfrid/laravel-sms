@@ -346,7 +346,7 @@ class SmsLogController extends Controller
         $messaging = new Messaging();
 
         //data submitted
-        $messageId = "TP66ZXWCCR";
+        $messageId = "ATP66ZXWCCR";
         $message = "Hello there, how are you!";
         $sender = "TAARIFA";
 
