@@ -62,16 +62,16 @@ class SendSMSJob implements ShouldQueue
                 $postData = array(
                     'source_addr' => $sender,
                     'encoding' => 0,
-                    //'schedule_time' => '',
+                    'schedule_time' => '',
                     'message' => $message,
                     'recipients' => [array('recipient_id' => 1, 'dest_addr' => $messaging->castPhone($val->phone))]
                 );
 
                 //check for schedule
-                if ($schedule == 1)
-                    $postData['schedule_time'] = $val->schedule_at;
-                else
-                    $postData['schedule_time'] = '';
+                // if ($schedule == 1)
+                //     $postData['schedule_time'] = $val->schedule_at;
+                // else
+                //     $postData['schedule_time'] = '';
 
                 //post data
                 $response = $messaging->sendSMS($postData);
