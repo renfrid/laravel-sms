@@ -14,19 +14,16 @@ class Messaging
 
     public function __construct()
     {
-        $this->API_BASE_URL = 'https://apisms.beem.africa/v1/send';
-        $this->API_DELIVERY_URL = 'https://dlrapi.beem.africa/public/v1/delivery-reports';
-
-        $this->API_KEY = '694e9d101ab76d66';
-        $this->SECRET_KEY = 'YTFjM2E4MmNhMmU0NWY4Nzk1NTYzOTkwNzExMWI0YmM1YWY0MGNkM2VkMDE2NjgxY2E2MDk1YzJhZTRkZWM3YQ==';
-        $this->M_CODE = "255";
     }
 
     //action to send notification
     function sendSMS($arr_data)
     {
-        //init curl
-        $ch = curl_init($this->API_BASE_URL);
+        $API_KEY ='694e9d101ab76d66';
+        $SECRET_KEY = 'YTFjM2E4MmNhMmU0NWY4Nzk1NTYzOTkwNzExMWI0YmM1YWY0MGNkM2VkMDE2NjgxY2E2MDk1YzJhZTRkZWM3YQ==';
+
+        // Setup cURL
+        $ch = curl_init('https://apisms.beem.africa/v1/send');
         error_reporting(E_ALL);
         ini_set('display_errors', 1);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
@@ -35,7 +32,7 @@ class Messaging
             CURLOPT_POST => TRUE,
             CURLOPT_RETURNTRANSFER => TRUE,
             CURLOPT_HTTPHEADER => array(
-                'Authorization:Basic ' . base64_encode("$this->API_KEY:$this->SECRET_KEY"),
+                'Authorization:Basic ' . base64_encode("$API_KEY:$SECRET_KEY"),
                 'Content-Type: application/json'
             ),
             CURLOPT_POSTFIELDS => json_encode($arr_data)
@@ -54,12 +51,16 @@ class Messaging
     //activon to get delivery reports
     function deliveryReport($arr_data)
     {
+        $API_KEY ='694e9d101ab76d66';
+        $SECRET_KEY = 'YTFjM2E4MmNhMmU0NWY4Nzk1NTYzOTkwNzExMWI0YmM1YWY0MGNkM2VkMDE2NjgxY2E2MDk1YzJhZTRkZWM3YQ==';
+        $API_DELIVERY_URL = 'https://dlrapi.beem.africa/public/v1/delivery-reports';
+
         // Setup cURL
         $ch = curl_init();
         error_reporting(E_ALL);
         ini_set('display_errors', 1);
 
-        $URL = $this->API_DELIVERY_URL . '?' . http_build_query($arr_data);
+        $URL = $API_DELIVERY_URL . '?' . http_build_query($arr_data);
 
         curl_setopt($ch, CURLOPT_URL, $URL);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
@@ -68,7 +69,7 @@ class Messaging
             CURLOPT_HTTPGET => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER => array(
-                'Authorization:Basic ' . base64_encode("$this->API_KEY:$this->SECRET_KEY"),
+                'Authorization:Basic ' . base64_encode("$API_KEY:$SECRET_KEY"),
                 'Content-Type: application/json',
             ),
         ));
@@ -104,10 +105,12 @@ class Messaging
     //remove 0 and + on start of mobile
     function castPhone($mobile)
     {
+        $M_CODE = "255";
+
         if (preg_match("~^0\d+$~", $mobile)) {
-            return $this->M_CODE . substr($mobile, 1);
+            return $M_CODE . substr($mobile, 1);
         } else if (substr($mobile, 0, 3) != '255' & strlen($mobile) == 9) {
-            return $this->M_CODE . $mobile;
+            return $M_CODE . $mobile;
         } else {
             return str_replace('+', '', $mobile);
         }
