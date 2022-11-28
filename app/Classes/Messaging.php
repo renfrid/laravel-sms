@@ -15,8 +15,8 @@ class Messaging
 
     public function __construct()
     {
-        $this->API_KEY = '770fae1c9ce9ac4e';
-        $this->SECRET_KEY = 'OWIyNDI0MTg4NjFkMjBiNDEyNTg5ZjJiMjAxMDhhYjI0Njg0MzY1NzQ0NmE1NDc1ZDRhYTg1YjdiNmI4ZGVlYg==';
+        $this->API_KEY = '694e9d101ab76d66';
+        $this->SECRET_KEY = 'YTFjM2E4MmNhMmU0NWY4Nzk1NTYzOTkwNzExMWI0YmM1YWY0MGNkM2VkMDE2NjgxY2E2MDk1YzJhZTRkZWM3YQ==';
         $this->API_DELIVERY_URL = 'https://dlrapi.beem.africa/public/v1/delivery-reports';
     }
 
