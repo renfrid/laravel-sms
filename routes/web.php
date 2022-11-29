@@ -7,6 +7,7 @@ use App\Http\Controllers\ContactGroupController;
 use App\Http\Controllers\CronJobController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SenderController;
 use App\Http\Controllers\SmsLogController;
@@ -34,6 +35,10 @@ Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard'
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login'])->name('login');
 Route::get('logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::get('profile/change-password', [ProfileController::class, 'change_password'])->name('profile.change-password');
+Route::post('profile/change-password', [ProfileController::class, 'store_password'])->name('profile.change-password');
+
 
 //sms logs
 Route::any('sms-logs/lists', [SmsLogController::class, 'lists'])->name('sms-logs.lists');
