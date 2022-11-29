@@ -144,6 +144,7 @@
                                             <th scope="col" width="12%">Created On</th>
                                             <th scope="col" width="10%">No. of SMS</th>
                                             <th scope="col" width="10%">Status</th>
+                                            <th scope="col" style="width: 40px;">Action</th>
                                         </tr>
                                     </thead>
 
@@ -162,6 +163,12 @@
                                                 <td>{{ $value->created_at }}</td>
                                                 <td>{{ $value->sms_count }}</td>
                                                 <td>{{ $value->status }}</td>
+                                                <td>    
+                                                    <a href="{{ route('sms-logs.delete', $value->id) }}" title="Delete Contact"
+                                                        class="btn btn-xss delete">
+                                                        <i class="bx bx-trash bx-xs text-danger"></i>
+                                                    </a>
+                                                </td>
                                             </tr>
                                             @php
                                                 $serial++;

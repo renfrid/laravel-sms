@@ -53,6 +53,7 @@ Route::get('sms-logs/file-sms', [SmsLogController::class, 'file_sms'])->name('sm
 Route::post('sms-logs/send-file-sms', [SmsLogController::class, 'send_file_sms'])->name('sms-logs.send-file-sms');
 
 //delete sms logs
+Route::any('sms-logs/{id}/delete', [SmsLogController::class, 'delete'])->name('sms-logs.delete');
 Route::any('sms-logs/delete-all', [SmsLogController::class, 'delete_all'])->name('sms-logs.delete-all');
 
 //cron for sending sms

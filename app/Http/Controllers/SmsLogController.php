@@ -319,6 +319,24 @@ class SmsLogController extends Controller
         return Redirect::route('sms-logs.file-sms')->with('success', 'File sms processed successfully!');
     }
 
+      /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function delete($id)
+    {
+        $sms_log = SmsLog::findOrFail($id);
+
+        if ($del = $sms_log->delete()) {
+            //redirect
+            return Redirect::route('sms-logs.lists')->with('success', 'SMS deleted!');
+        } else {
+            return Redirect::route('sms-logs.lists')->with('danger', 'Failed to delete sms!');
+        }
+    }
+
     //delete all
     public function delete_all()
     {
