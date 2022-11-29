@@ -233,8 +233,8 @@
                 <div class="card-header d-flex align-items-center">
                     <h4 class="card-title flex-grow-1 mb-0">Recent Delivered SMS</h4>
                     <div class="flex-shrink-0">
-                        <a href="javascript:void(0);" class="btn btn-soft-info btn-sm">Export
-                            Report</a>
+                        {{-- <a href="javascript:void(0);" class="btn btn-soft-info btn-sm">Export
+                            Report</a> --}}
                     </div>
                 </div><!-- end cardheader -->
                 <div class="card-body">

@@ -125,31 +125,33 @@
                     </div>
                 </li> --}}
 
-                <li class="nav-item">
-                    <a class="nav-link menu-link" href="#sidebarUsers" data-bs-toggle="collapse" role="button"
-                        aria-expanded="false" aria-controls="sidebarUsers">
-                        <i class="las la-users-cog"></i> <span data-key="t-tables">Manage Users</span>
-                    </a>
-                    <div class="collapse menu-dropdown" id="sidebarUsers">
-                        <ul class="nav nav-sm flex-column">
-                            <li class="nav-item">
-                                <a href="{{ route('users.index') }}" class="nav-link">
-                                    Users
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('users.create') }}" class="nav-link">
-                                    Register New User
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('roles.index') }}" class="nav-link">
-                                    Roles
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
+                @if (Auth::user()->hasRole('admin'))
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="#sidebarUsers" data-bs-toggle="collapse" role="button"
+                            aria-expanded="false" aria-controls="sidebarUsers">
+                            <i class="las la-users-cog"></i> <span data-key="t-tables">Manage Users</span>
+                        </a>
+                        <div class="collapse menu-dropdown" id="sidebarUsers">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="{{ route('users.index') }}" class="nav-link">
+                                        Users
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('users.create') }}" class="nav-link">
+                                        Register New User
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('roles.index') }}" class="nav-link">
+                                        Roles
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                @endif
             </ul>
         </div>
         <!-- Sidebar -->

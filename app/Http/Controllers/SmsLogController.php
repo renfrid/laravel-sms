@@ -10,6 +10,7 @@ use App\Classes\Messaging;
 use App\Jobs\SendSMSJob;
 use App\Models\Group;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -316,5 +317,17 @@ class SmsLogController extends Controller
 
         //redirect 
         return Redirect::route('sms-logs.file-sms')->with('success', 'File sms processed successfully!');
+    }
+
+    //delete all
+    public function delete_all()
+    {
+        if (!Auth::user()->hasRole('admin')) {
+            return Redirect::route('sms-logs.lists')->with('danger', 'You can not delete sms logs!');
+        } else {
+            //delete all messages
+            DB::table('sms_logs')->truncate();
+            return Redirect::route('sms-logs.lists')->with('success', 'SMS logs successfully deleted!');
+        }
     }
 }

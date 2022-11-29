@@ -24,6 +24,18 @@
         <div class="col-xl-12">
 
             <div class="card">
+
+                <div class="card-header align-items-center d-flex">
+                    <h4 class="card-title mb-0 flex-grow-1">Advanced Search</h4>
+                    <div class="flex-shrink-0">
+                        @if (Auth::user()->hasRole('admin'))
+                            <a href="{{ route('sms-logs.delete-all') }}" class="btn btn-outline-danger btn-sm delete">
+                                <i class="bx bx-trash bx-xs text-danger"></i> Delete all
+                            </a>
+                        @endif
+                    </div>
+                </div><!-- end card header -->
+
                 <div class="card-body">
                     <div class="row">
                         <div class="col-lg-12">
