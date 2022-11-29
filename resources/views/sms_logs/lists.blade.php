@@ -163,11 +163,13 @@
                                                 <td>{{ $value->created_at }}</td>
                                                 <td>{{ $value->sms_count }}</td>
                                                 <td>{{ $value->status }}</td>
-                                                <td>    
-                                                    <a href="{{ route('sms-logs.delete', $value->id) }}" title="Delete Contact"
-                                                        class="btn btn-xss delete">
-                                                        <i class="bx bx-trash bx-xs text-danger"></i>
-                                                    </a>
+                                                <td>
+                                                    @if (Auth::user()->hasRole('admin'))
+                                                        <a href="{{ route('sms-logs.delete', $value->id) }}"
+                                                            title="Delete Contact" class="btn btn-xss delete">
+                                                            <i class="bx bx-trash bx-xs text-danger"></i>
+                                                        </a>
+                                                    @endif
                                                 </td>
                                             </tr>
                                             @php
