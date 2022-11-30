@@ -103,11 +103,14 @@ class CronJobController extends Controller
                     $response = $this->messaging->deliveryReport($postData);
                     $result = json_decode($response);
 
-                    //sms log
-                    $sms_log = SmsLog::findOrFail($val->id);
-                    //change status to DELIVERED or REJECTED
-                    $sms_log->status = $result->status;
-                    $sms_log->save();
+                    echo "<pre>";
+                    print_r($result);
+
+                    // //sms log
+                    // $sms_log = SmsLog::findOrFail($val->id);
+                    // //change status to DELIVERED or REJECTED
+                    // $sms_log->status = $result->status;
+                    // $sms_log->save();
                 }
             }
         }
