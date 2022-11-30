@@ -103,14 +103,24 @@ class CronJobController extends Controller
                     $response = $this->messaging->deliveryReport($postData);
                     $result = json_decode($response);
 
-                    echo "<pre>";
-                    print_r($result);
+                    // echo "<pre>";
+                    // print_r($result);
 
-                    // //sms log
-                    // $sms_log = SmsLog::findOrFail($val->id);
-                    // //change status to DELIVERED or REJECTED
-                    // $sms_log->status = $result->status;
-                    // $sms_log->save();
+                    //sms log
+                    $sms_log = SmsLog::findOrFail($val->id);
+
+                    //check for errors
+                    if (isset($result->error)) {
+                        if ($result->error == 'Invalid request_id or dest_addr') {
+                            //change status to  DELIVERED
+                            $sms_log->status = "DELIVERED";
+                        }
+                    } else {
+                        //change status to DELIVERED or REJECTED
+                        $sms_log->status = $result->status;
+                    }
+                    //save
+                    $sms_log->save();
                 }
             }
         }
