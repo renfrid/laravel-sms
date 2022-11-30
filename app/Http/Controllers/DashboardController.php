@@ -26,7 +26,10 @@ class DashboardController extends Controller
         $all_pending_sms = SmsLog::where(['status' => 'PENDING'])->count();
 
         //rejected sms
-        $all_rejected_sms = SmsLog::where(['status' => 'REJECTED'])->count();
+        $all_rejected_sms = SmsLog::where(function ($query) {
+            $query->where('status', '=', 'REJECTED')
+                ->orWhere('status', '=', 'UNDELIVERED');
+        })->count();
 
         $data = [
             'total_sms' => $all_sms,
