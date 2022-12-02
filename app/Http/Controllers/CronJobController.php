@@ -15,35 +15,29 @@ class CronJobController extends Controller
         $this->messaging = new Messaging();
     }
 
-
-    //send sms process
-    function send_process()
+    //send sms
+    function send_sms()
     {
         //limit
         $limit = 100;
-        $no_of_pending_sms = SmsLog::where(['status' => 'PENDING'])->count();
+        $no_of_pending_sms = SmsLog::where(['status' => 'PENDING', 'schedule' => null])->count();
 
         //looping sms
         $looping = $no_of_pending_sms / $limit;
 
         //iterate looping
         for ($i = 1; $i <= ceil($looping); $i++) {
-            $recipients = SmsLog::select('id', 'phone', 'message', 'sender', 'schedule', 'schedule_at')->where(['status' => 'PENDING'])->take($limit)->get();
+            $recipients = SmsLog::select('id', 'phone', 'message', 'sender')->where(['status' => 'PENDING', 'schedule' => null])->take($limit)->get();
 
             foreach ($recipients as $val) {
                 //create arr data
                 $postData = array(
                     'source_addr' => $val->sender,
                     'encoding' => 0,
+                    'schedule_time' => '',
                     'message' => $val->message,
                     'recipients' => [array('recipient_id' => 1, 'dest_addr' => $this->messaging->castPhone($val->phone))]
                 );
-
-                //check for schedule
-                if ($val->schedule == 1)
-                    $postData['schedule_time'] = $val->schedule_at;
-                else
-                    $postData['schedule_time'] = '';
 
                 //post data
                 $response = $this->messaging->sendSMS($postData);
@@ -58,6 +52,7 @@ class CronJobController extends Controller
                     $sms_log->gateway_code = $result->code;
                     $sms_log->gateway_message = $result->message;
                     $sms_log->status = "SENT";
+                    $sms_log->sent_at = date('Y-m-d H:i:s');
                     $sms_log->save();
 
                     //TODO: deduct bundle
@@ -68,6 +63,71 @@ class CronJobController extends Controller
                     $sms_log->gateway_code = $result->code;
                     $sms_log->gateway_message = $result->message;
                     $sms_log->status = "REJECTED";
+                    $sms_log->sent_at = date('Y-m-d H:i:s');
+                    $sms_log->save();
+                }
+            }
+        }
+
+        //print message
+        echo json_encode(['error' => false, "success_msg" => "Message sent to sms gateway"]);
+    }
+
+    //send scheduled sms
+    function send_scheduled_sms()
+    {
+        //current date
+        $current_date = date('Y-m-d H:i');
+
+        //limit
+        $limit = 100;
+        $no_of_pending_sms = SmsLog::where(['status' => 'PENDING', 'schedule' => 1])
+            ->where('schedule_at', '>=', $current_date)->count();
+
+        //looping sms
+        $looping = $no_of_pending_sms / $limit;
+
+        //iterate looping
+        for ($i = 1; $i <= ceil($looping); $i++) {
+            $recipients = SmsLog::select('id', 'phone', 'message', 'sender')->where(['status' => 'PENDING', 'schedule' => 1])
+                ->where('schedule_at', '>=', $current_date)
+                ->take($limit)->get();
+
+            foreach ($recipients as $val) {
+                //create arr data
+                $postData = array(
+                    'source_addr' => $val->sender,
+                    'encoding' => 0,
+                    'schedule_time' => '',
+                    'message' => $val->message,
+                    'recipients' => [array('recipient_id' => 1, 'dest_addr' => $this->messaging->castPhone($val->phone))]
+                );
+
+                //post data
+                $response = $this->messaging->sendSMS($postData);
+                $result = json_decode($response);
+
+                //check for successful or failure of message
+                if ($result->code == 100) {
+                    //update sms status
+                    $sms_log = SmsLog::findOrFail($val->id);
+                    $sms_log->gateway_id = $result->request_id;
+                    $sms_log->gateway_response = json_encode($result);
+                    $sms_log->gateway_code = $result->code;
+                    $sms_log->gateway_message = $result->message;
+                    $sms_log->status = "SENT";
+                    $sms_log->sent_at = date('Y-m-d H:i:s');
+                    $sms_log->save();
+
+                    //TODO: deduct bundle
+                } else {
+                    //update sms status
+                    $sms_log = SmsLog::findOrFail($val->id);
+                    $sms_log->gateway_response = json_encode($result);
+                    $sms_log->gateway_code = $result->code;
+                    $sms_log->gateway_message = $result->message;
+                    $sms_log->status = "REJECTED";
+                    $sms_log->sent_at = date('Y-m-d H:i:s');
                     $sms_log->save();
                 }
             }
@@ -80,6 +140,10 @@ class CronJobController extends Controller
     //delivery report
     function delivery_report()
     {
+
+        echo date('Y-m-d H:i:s');
+        exit();
+
         //limit
         $limit = 100;
         $no_of_sent_sms = SmsLog::where(['status' => 'SENT'])->count();
@@ -114,10 +178,12 @@ class CronJobController extends Controller
                         if ($result->error == 'Invalid request_id or dest_addr') {
                             //change status to  DELIVERED
                             $sms_log->status = "DELIVERED";
+                            $sms_log->delivered_at = date('Y-m-d H:i:s');
                         }
                     } else {
-                        //change status to DELIVERED or REJECTED
+                        //change status to DELIVERED or REJECTED or UNDELIVERED
                         $sms_log->status = $result->status;
+                        $sms_log->delivered_at = date('Y-m-d H:i:s');
                     }
                     //save
                     $sms_log->save();

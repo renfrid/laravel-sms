@@ -57,7 +57,8 @@ Route::any('sms-logs/{id}/delete', [SmsLogController::class, 'delete'])->name('s
 Route::any('sms-logs/delete-all', [SmsLogController::class, 'delete_all'])->name('sms-logs.delete-all');
 
 //cron for sending sms
-Route::get('cron-jobs/send-process', [CronJobController::class, 'send_process'])->name('cron-jobs.send-process');
+Route::get('cron-jobs/send-sms', [CronJobController::class, 'send_sms'])->name('cron-jobs.send-sms');
+Route::get('cron-jobs/send-scheduled-sms', [CronJobController::class, 'send_scheduled_sms'])->name('cron-jobs.send-scheduled-sms');
 
 //cron for delivery report
 Route::get('cron-jobs/delivery-report', [CronJobController::class, 'delivery_report'])->name('cron-jobs.delivery-report');
