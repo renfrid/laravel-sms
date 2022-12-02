@@ -119,8 +119,17 @@
                 <div class="card-header align-items-center d-flex">
                     <h4 class="card-title mb-0 flex-grow-1">SMS Logs</h4>
                     <div class="flex-shrink-0">
-                        <span class="font-weight-500">No. of SMS:
-                            {{ number_format(count($sms_logs)) }}</span>
+                        {{-- <span class="font-weight-500">No. of SMS:
+                            {{ number_format(count($sms_logs)) }}
+                        </span> --}}
+
+                        <a title="Export" class="btn btn-outline-success btn-sm"
+                            href="{{ route('sms-logs.export-xls', ['start_at' => $data['start_at'], 'end_at' => $data['end_at'], 'sender' => $data['sender'], 'status' => $data['status']]) }}">
+                            <i class="bx bx-export"></i> Export XLS</a>
+
+                        {{-- <a href="{{ route('sms-logs.delete-all') }}" class="btn btn-outline-success btn-sm">
+                            <i class="bx bxs-file-export"></i> Export
+                        </a> --}}
                     </div>
                 </div><!-- end card header -->
 
@@ -154,10 +163,7 @@
                                         @endphp
                                         @foreach ($sms_logs as $value)
                                             <tr>
-                                                <td>
-                                                    {{ $serial }}
-                                                </td>
-
+                                                <td>{{ $serial }}</td>
                                                 <td>{{ $value->message }}</td>
                                                 <td>{{ $value->phone }}</td>
                                                 <td>{{ $value->created_at }}</td>

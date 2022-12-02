@@ -55,6 +55,7 @@ Route::post('sms-logs/send-file-sms', [SmsLogController::class, 'send_file_sms']
 //delete sms logs
 Route::any('sms-logs/{id}/delete', [SmsLogController::class, 'delete'])->name('sms-logs.delete');
 Route::any('sms-logs/delete-all', [SmsLogController::class, 'delete_all'])->name('sms-logs.delete-all');
+Route::get('sms-logs/export-xls', [SmsLogController::class, 'export_xls'])->name('sms-logs.export-xls');
 
 //cron for sending sms
 Route::get('cron-jobs/send-sms', [CronJobController::class, 'send_sms'])->name('cron-jobs.send-sms');

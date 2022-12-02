@@ -7,6 +7,7 @@ use App\Models\SmsLog;
 use App\Models\Template;
 use Illuminate\Http\Request;
 use App\Classes\Messaging;
+use App\Exports\SmsLogExport;
 use App\Jobs\SendSMSJob;
 use App\Models\Group;
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +36,7 @@ class SmsLogController extends Controller
         $sms_logs = SmsLog::orderBy('created_at');
 
         if (isset($_POST['filter'])) {
+            //post variable
             $start_at = $request->input('start_at');
             $end_at = $request->input('end_at');
             $sender = $request->input('sender');
@@ -59,14 +61,28 @@ class SmsLogController extends Controller
             //sms logs
             $sms_logs = $sms_logs->paginate(100);
         } else {
+            //passing variable
+            $start_at = null;
+            $end_at = null;
+            $sender = null;
+            $status = null;
+
             //sms logs
             $sms_logs = $sms_logs->paginate(100);
         }
 
+        //passing data
+        $data = [
+            'start_at' => $start_at,
+            'end_at' => $end_at,
+            'status' => $status,
+            'sender' => $sender
+        ];
+
         //populate data
         $senders = Sender::all();
 
-        return view('sms_logs.lists', compact('title', 'sms_logs', 'senders'));
+        return view('sms_logs.lists', compact('title', 'sms_logs', 'senders', 'data'));
     }
 
     //send quick sms
@@ -319,7 +335,7 @@ class SmsLogController extends Controller
         return Redirect::route('sms-logs.file-sms')->with('success', 'File sms processed successfully!');
     }
 
-      /**
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -347,5 +363,11 @@ class SmsLogController extends Controller
             DB::table('sms_logs')->truncate();
             return Redirect::route('sms-logs.lists')->with('success', 'SMS logs successfully deleted!');
         }
+    }
+
+    //export xls
+    function export_xls(Request $request)
+    {
+        return Excel::download(new SmsLogExport($request->start_at, $request->end_at,  $request->sender, $request->status), date('YmdHis') . '-SMSLogs.xlsx');
     }
 }
