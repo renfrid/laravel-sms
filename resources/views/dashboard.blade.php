@@ -104,10 +104,10 @@
                                 </div>
                                 <div class="flex-grow-1 overflow-hidden ms-3">
                                     <p class="text-uppercase fw-medium text-muted text-truncate mb-3">
-                                        Rejected SMS</p>
+                                        UnDelivered SMS</p>
                                     <div class="d-flex align-items-center mb-3">
                                         <h4 class="fs-4 flex-grow-1 mb-0"><span class="counter-value"
-                                                data-target="{{ number_format($data['rejected_sms']) }}">{{ number_format($data['rejected_sms']) }}</span>
+                                                data-target="{{ number_format($data['undelivered_sms']) }}">{{ number_format($data['undelivered_sms']) }}</span>
                                         </h4>
                                     </div>
                                 </div>
@@ -170,9 +170,9 @@
                                 <div class="col-6 col-sm-3">
                                     <div class="p-3 border border-dashed border-start-0 border-end-0">
                                         <h5 class="mb-1 text-danger"><span class="counter-value"
-                                                data-target="{{ number_format($data['rejected_sms']) }}">{{ number_format($data['rejected_sms']) }}</span>
+                                                data-target="{{ number_format($data['undelivered_sms']) }}">{{ number_format($data['undelivered_sms']) }}</span>
                                         </h5>
-                                        <p class="text-muted mb-0">Rejected SMS</p>
+                                        <p class="text-muted mb-0">UnDelivered SMS</p>
                                     </div>
                                 </div>
                                 <!--end col-->
