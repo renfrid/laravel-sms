@@ -140,10 +140,6 @@ class CronJobController extends Controller
     //delivery report
     function delivery_report()
     {
-
-        echo date('Y-m-d H:i:s');
-        exit();
-
         //limit
         $limit = 100;
         $no_of_sent_sms = SmsLog::where(['status' => 'SENT'])->count();
