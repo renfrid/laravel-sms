@@ -77,12 +77,12 @@ class CronJobController extends Controller
     function send_scheduled_sms()
     {
         //current date
-        $current_date = date('Y-m-d H:i');
+        $current_date = date('Y-m-d H:i:s');
 
         //limit
         $limit = 100;
         $no_of_pending_sms = SmsLog::where(['status' => 'PENDING', 'schedule' => 1])
-            ->where('schedule_at', '>=', $current_date)->count();
+            ->where('schedule_at', '<=', $current_date)->count();
 
         //looping sms
         $looping = $no_of_pending_sms / $limit;
@@ -90,7 +90,7 @@ class CronJobController extends Controller
         //iterate looping
         for ($i = 1; $i <= ceil($looping); $i++) {
             $recipients = SmsLog::select('id', 'phone', 'message', 'sender')->where(['status' => 'PENDING', 'schedule' => 1])
-                ->where('schedule_at', '>=', $current_date)
+                ->where('schedule_at', '<=', $current_date)
                 ->take($limit)->get();
 
             foreach ($recipients as $val) {
