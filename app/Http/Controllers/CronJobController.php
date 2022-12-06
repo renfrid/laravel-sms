@@ -22,8 +22,7 @@ class CronJobController extends Controller
         $limit = 100;
         $no_of_pending_sms = SmsLog::where(['schedule' => null])
             ->where(function ($query) {
-                $query->where('status', '=', 'PENDING')
-                    ->orWhere('status', '=', 'REJECTED');
+                $query->where('status', '=', 'PENDING');
             })->count();
 
         //looping sms
@@ -33,8 +32,7 @@ class CronJobController extends Controller
         for ($i = 1; $i <= ceil($looping); $i++) {
             $recipients = SmsLog::select('id', 'phone', 'message', 'sender')->where(['schedule' => null])
                 ->where(function ($query) {
-                    $query->where('status', '=', 'PENDING')
-                        ->orWhere('status', '=', 'REJECTED');
+                    $query->where('status', '=', 'PENDING');
                 })->take($limit)->get();
 
             foreach ($recipients as $val) {
@@ -92,8 +90,7 @@ class CronJobController extends Controller
         $no_of_pending_sms = SmsLog::where(['schedule' => 1])
             ->where('schedule_at', '<=', $current_date)
             ->where(function ($query) {
-                $query->where('status', '=', 'PENDING')
-                    ->orWhere('status', '=', 'REJECTED');
+                $query->where('status', '=', 'PENDING');
             })
             ->count();
 
@@ -105,8 +102,7 @@ class CronJobController extends Controller
             $recipients = SmsLog::select('id', 'phone', 'message', 'sender')->where(['schedule' => 1])
                 ->where('schedule_at', '<=', $current_date)
                 ->where(function ($query) {
-                    $query->where('status', '=', 'PENDING')
-                        ->orWhere('status', '=', 'REJECTED');
+                    $query->where('status', '=', 'PENDING');
                 })
                 ->take($limit)->get();
 
@@ -149,6 +145,9 @@ class CronJobController extends Controller
                 }
             }
         }
+
+        //update all rejected to delivered
+        //SmsLog::where(['status' => 'REJECTED'])->update(['status' => 'DELIVERED', 'delivered_at' => date('Y-m-d H:i:s')]);
 
         //print message
         echo json_encode(['error' => false, "success_msg" => "Message sent to sms gateway"]);
