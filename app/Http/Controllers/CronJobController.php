@@ -20,14 +20,22 @@ class CronJobController extends Controller
     {
         //limit
         $limit = 100;
-        $no_of_pending_sms = SmsLog::where(['status' => 'PENDING', 'schedule' => null])->count();
+        $no_of_pending_sms = SmsLog::where(['schedule' => null])
+            ->where(function ($query) {
+                $query->where('status', '=', 'PENDING')
+                    ->orWhere('status', '=', 'REJECTED');
+            })->count();
 
         //looping sms
         $looping = $no_of_pending_sms / $limit;
 
         //iterate looping
         for ($i = 1; $i <= ceil($looping); $i++) {
-            $recipients = SmsLog::select('id', 'phone', 'message', 'sender')->where(['status' => 'PENDING', 'schedule' => null])->take($limit)->get();
+            $recipients = SmsLog::select('id', 'phone', 'message', 'sender')->where(['schedule' => null])
+                ->where(function ($query) {
+                    $query->where('status', '=', 'PENDING')
+                        ->orWhere('status', '=', 'REJECTED');
+                })->take($limit)->get();
 
             foreach ($recipients as $val) {
                 //create arr data
@@ -81,16 +89,25 @@ class CronJobController extends Controller
 
         //limit
         $limit = 100;
-        $no_of_pending_sms = SmsLog::where(['status' => 'PENDING', 'schedule' => 1])
-            ->where('schedule_at', '<=', $current_date)->count();
+        $no_of_pending_sms = SmsLog::where(['schedule' => 1])
+            ->where('schedule_at', '<=', $current_date)
+            ->where(function ($query) {
+                $query->where('status', '=', 'PENDING')
+                    ->orWhere('status', '=', 'REJECTED');
+            })
+            ->count();
 
         //looping sms
         $looping = $no_of_pending_sms / $limit;
 
         //iterate looping
         for ($i = 1; $i <= ceil($looping); $i++) {
-            $recipients = SmsLog::select('id', 'phone', 'message', 'sender')->where(['status' => 'PENDING', 'schedule' => 1])
+            $recipients = SmsLog::select('id', 'phone', 'message', 'sender')->where(['schedule' => 1])
                 ->where('schedule_at', '<=', $current_date)
+                ->where(function ($query) {
+                    $query->where('status', '=', 'PENDING')
+                        ->orWhere('status', '=', 'REJECTED');
+                })
                 ->take($limit)->get();
 
             foreach ($recipients as $val) {
