@@ -167,7 +167,13 @@
                                                 <td>{{ $value->message }}</td>
                                                 <td>{{ $value->phone }}</td>
                                                 <td>{{ $value->created_at }}</td>
-                                                <td>{{ $value->sms_count }}</td>
+                                                <td>
+                                                    @if (strlen($value->message) > 160)
+                                                        {{ '2' }}
+                                                    @else
+                                                        {{ '1' }}
+                                                    @endif
+                                                </td>
                                                 <td>{{ $value->status }}</td>
                                                 <td>
                                                     @if (Auth::user()->hasRole('admin'))

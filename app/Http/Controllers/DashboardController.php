@@ -16,11 +16,6 @@ class DashboardController extends Controller
     {
         $title = 'Dashboard';
 
-        // $message = "Ndoa inayohusisha mtu mwenye umri chini ya miaka 18 ina madhara makubwa kwa mtoto anayeoa au kuolewa na kwa jamii. Linda watoto na jamii kwa kupinga hizi ndoa za utotoni.";
-
-        // echo strlen($message);
-        // exit();
-
         //total sms
         $all_sms = SmsLog::count();
 
