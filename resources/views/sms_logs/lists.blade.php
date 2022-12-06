@@ -167,7 +167,7 @@
                                                 <td>{{ $value->message }}</td>
                                                 <td>{{ $value->phone }}</td>
                                                 <td>{{ $value->created_at }}</td>
-                                                <td>{{ strlen($value->message) }}</td>
+                                                <td>{{ $value->sms_count }}</td>
                                                 <td>{{ $value->status }}</td>
                                                 <td>
                                                     @if (Auth::user()->hasRole('admin'))
