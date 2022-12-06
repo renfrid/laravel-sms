@@ -142,14 +142,20 @@ class CronJobController extends Controller
     {
         //limit
         $limit = 100;
-        $no_of_sent_sms = SmsLog::where(['status' => 'SENT'])->count();
+        $no_of_sent_sms = SmsLog::where(function ($query) {
+            $query->where(['status' => 'SENT'])
+                ->orWhere(['status' => 'REJECTED']);
+        })->count();
 
         //looping sms
         $looping = $no_of_sent_sms / $limit;
 
         //iterate looping
         for ($i = 1; $i <= ceil($looping); $i++) {
-            $recipients = SmsLog::select('id', 'gateway_id', 'phone')->where(['status' => 'SENT'])->take($limit)->get();
+            $recipients = SmsLog::select('id', 'gateway_id', 'phone')->where(function ($query) {
+                $query->where(['status' => 'SENT'])
+                    ->orWhere(['status' => 'REJECTED']);
+            })->take($limit)->get();
 
             foreach ($recipients as $val) {
                 //create arr data
