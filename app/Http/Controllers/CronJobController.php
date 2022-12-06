@@ -147,9 +147,6 @@ class CronJobController extends Controller
                 ->orWhere(['status' => 'REJECTED']);
         })->count();
 
-        echo $no_of_sent_sms;
-        exit();
-
         //looping sms
         $looping = $no_of_sent_sms / $limit;
 
@@ -172,8 +169,8 @@ class CronJobController extends Controller
                     $response = $this->messaging->deliveryReport($postData);
                     $result = json_decode($response);
 
-                    // echo "<pre>";
-                    // print_r($result);
+                    echo "<pre>";
+                    print_r($result);
 
                     //sms log
                     $sms_log = SmsLog::findOrFail($val->id);
