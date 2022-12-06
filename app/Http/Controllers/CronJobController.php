@@ -153,6 +153,15 @@ class CronJobController extends Controller
     //delivery report
     function delivery_report()
     {
+        //update gateway status
+        $sms_logs = SmsLog::all();
+        foreach ($sms_logs as $log) {
+            SmsLog::where('id', '=', $log->id)->update(['gateway_status' => $log->status]);
+        }
+        echo response()->json(["error" => false, "success_msg" => "Delivery report success!"]);
+        exit();
+
+
         //limit
         $limit = 100;
         $no_of_sent_sms = SmsLog::where(function ($query) {
@@ -192,15 +201,13 @@ class CronJobController extends Controller
                     if (isset($result->error)) {
                         if ($result->error == 'Invalid request_id or dest_addr') {
                             //change status to  DELIVERED
-                            $sms_log->status = "DELIVERED";
+                            $sms_log->gateway_status = "DELIVERED";
                             $sms_log->delivered_at = date('Y-m-d H:i:s');
                         }
                     } else {
-                        //change status to DELIVERED or REJECTED or UNDELIVERED
-                        if ($result->status != 'PENDING') {
-                            $sms_log->status = $result->status;
-                            $sms_log->delivered_at = date('Y-m-d H:i:s');
-                        }
+                        //change status to DELIVERED or REJECTED or UNDELIVERED or PENDING
+                        $sms_log->gateway_status = $result->status;
+                        $sms_log->delivered_at = date('Y-m-d H:i:s');
                     }
                     //save
                     $sms_log->save();
