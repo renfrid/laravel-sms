@@ -146,9 +146,6 @@ class CronJobController extends Controller
             }
         }
 
-        //update all rejected to delivered
-        //SmsLog::where(['status' => 'REJECTED'])->update(['status' => 'DELIVERED', 'delivered_at' => date('Y-m-d H:i:s')]);
-
         //print message
         echo json_encode(['error' => false, "success_msg" => "Message sent to sms gateway"]);
     }
@@ -200,14 +197,20 @@ class CronJobController extends Controller
                         }
                     } else {
                         //change status to DELIVERED or REJECTED or UNDELIVERED
-                        $sms_log->status = $result->status;
-                        $sms_log->delivered_at = date('Y-m-d H:i:s');
+                        if ($result->status != 'PENDING') {
+                            $sms_log->status = $result->status;
+                            $sms_log->delivered_at = date('Y-m-d H:i:s');
+                        }
                     }
                     //save
                     $sms_log->save();
                 }
             }
         }
+
+        //update all rejected to delivered
+        //SmsLog::where(['status' => 'REJECTED'])->update(['status' => 'DELIVERED', 'delivered_at' => date('Y-m-d H:i:s')]);
+
         echo response()->json(["error" => false, "success_msg" => "Delivery report success!"]);
     }
 }
