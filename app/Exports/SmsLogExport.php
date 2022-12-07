@@ -43,7 +43,7 @@ class SmsLogExport implements FromQuery, WithHeadings, ShouldAutoSize, WithEvent
 
         //status
         if ($this->status != null)
-            $sms_logs = $sms_logs->where('sms_logs.status', $this->status);
+            $sms_logs = $sms_logs->where('sms_logs.gateway_status', $this->status);
 
         //return 
         return $sms_logs;

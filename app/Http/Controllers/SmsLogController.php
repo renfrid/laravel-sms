@@ -56,7 +56,7 @@ class SmsLogController extends Controller
 
             //status
             if ($status != null)
-                $sms_logs = $sms_logs->where('sms_logs.status', $status);
+                $sms_logs = $sms_logs->where('sms_logs.gateway_status', $status);
 
             //sms logs
             $sms_logs = $sms_logs->paginate(100);

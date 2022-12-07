@@ -82,10 +82,11 @@
                                     <div class="mb-3">
                                         @php
                                             $options = [
-                                                'PENDING' => 'PENDING',
                                                 'SENT' => 'SENT',
+                                                'PENDING' => 'PENDING',
                                                 'DELIVERED' => 'DELIVERED',
                                                 'REJECTED' => 'REJECTED',
+                                                'UNDELIVERED' => 'UNDELIVERED',
                                             ];
                                             $options = ['' => 'SMS Status'] + $options;
                                         @endphp
