@@ -20,62 +20,66 @@ class CronJobController extends Controller
     function send_sms()
     {
         //limit
-        $limit = 100;
-        $no_of_pending_sms = SmsLog::where(['message_id' => 'KE38MCPU18R', 'gateway_status' => 'REJECTED', 'status' => 'REJECTED'])->count();
+        // $limit = 100;
+        // $no_of_pending_sms = SmsLog::where(['message_id' => 'KE38MCPU18R', 'gateway_status' => 'REJECTED', 'status' => 'REJECTED'])->count();
 
-        //looping sms
-        $looping = $no_of_pending_sms / $limit;
+        // //looping sms
+        // $looping = $no_of_pending_sms / $limit;
 
-        //iterate looping
-        for ($i = 1; $i <= $looping; $i++) {
-            $recipients = SmsLog::select('id', 'phone', 'message', 'sender')
-                ->where(['message_id' => 'KE38MCPU18R', 'gateway_status' => 'REJECTED', 'status' => 'REJECTED'])
-                ->take($limit)->get();
+        // //iterate looping
+        // for ($i = 1; $i <= $looping; $i++) {
 
-            foreach ($recipients as $val) {
-                //create arr data
-                $postData = array(
-                    'source_addr' => $val->sender,
-                    'encoding' => 0,
-                    'schedule_time' => '',
-                    'message' => $val->message,
-                    'recipients' => [array('recipient_id' => 1, 'dest_addr' => $this->messaging->castPhone($val->phone))]
-                );
+        $limit = 1000;
 
-                //post data
-                $response = $this->messaging->sendSMS($postData);
-                $result = json_decode($response);
+        //recipients
+        $recipients = SmsLog::select('id', 'phone', 'message', 'sender')
+            ->where(['message_id' => 'KE38MCPU18R', 'gateway_status' => 'REJECTED', 'status' => 'REJECTED'])
+            ->take($limit)->get();
 
-                echo "<pre>";
-                print_r($result);
+        foreach ($recipients as $val) {
+            //create arr data
+            $postData = array(
+                'source_addr' => $val->sender,
+                'encoding' => 0,
+                'schedule_time' => '',
+                'message' => $val->message,
+                'recipients' => [array('recipient_id' => 1, 'dest_addr' => $this->messaging->castPhone($val->phone))]
+            );
 
-                //check for successful or failure of message
-                if ($result->code == 100) {
-                    //update sms status
-                    $sms_log = SmsLog::findOrFail($val->id);
-                    $sms_log->gateway_id = $result->request_id;
-                    $sms_log->gateway_response = json_encode($result);
-                    $sms_log->gateway_code = $result->code;
-                    $sms_log->gateway_message = $result->message;
-                    $sms_log->status = "SENT";
-                    $sms_log->gateway_status = "SENT";
-                    $sms_log->sent_at = date('Y-m-d H:i:s');
-                    $sms_log->save();
+            //post data
+            $response = $this->messaging->sendSMS($postData);
+            $result = json_decode($response);
 
-                    //TODO: deduct bundle
-                } else {
-                    //update sms status
-                    $sms_log = SmsLog::findOrFail($val->id);
-                    $sms_log->gateway_response = json_encode($result);
-                    $sms_log->gateway_code = $result->code;
-                    $sms_log->gateway_message = $result->message;
-                    $sms_log->status = "REJECTED";
-                    $sms_log->gateway_status = "REJECTED";
-                    $sms_log->sent_at = date('Y-m-d H:i:s');
-                    $sms_log->save();
-                }
+            echo "<pre>";
+            print_r($result);
+
+            //check for successful or failure of message
+            if ($result->code == 100) {
+                //update sms status
+                $sms_log = SmsLog::findOrFail($val->id);
+                $sms_log->gateway_id = $result->request_id;
+                $sms_log->gateway_response = json_encode($result);
+                $sms_log->gateway_code = $result->code;
+                $sms_log->gateway_message = $result->message;
+                $sms_log->status = "SENT";
+                $sms_log->gateway_status = "SENT";
+                $sms_log->sent_at = date('Y-m-d H:i:s');
+                $sms_log->save();
+
+                //TODO: deduct bundle
+            } else {
+                //update sms status
+                $sms_log = SmsLog::findOrFail($val->id);
+                $sms_log->gateway_response = json_encode($result);
+                $sms_log->gateway_code = $result->code;
+                $sms_log->gateway_message = $result->message;
+                $sms_log->status = "REJECTED";
+                $sms_log->gateway_status = "REJECTED";
+                $sms_log->sent_at = date('Y-m-d H:i:s');
+                $sms_log->save();
             }
         }
+        //}
 
         //print message
         echo json_encode(['error' => false, "success_msg" => "Message sent to sms gateway"]);
