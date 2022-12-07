@@ -20,16 +20,16 @@ class CronJobController extends Controller
     function send_sms()
     {
         //limit
-        $limit = 200;
-        //$no_of_pending_sms = SmsLog::where(['message_id' => 'DP5TZ8AMCBX', 'gateway_status' => 'REJECTED', 'status' => 'REJECTED'])->count();
+        $limit = 100;
+        $no_of_pending_sms = SmsLog::where(['message_id' => 'KE38MCPU18R', 'gateway_status' => 'REJECTED', 'status' => 'REJECTED'])->count();
 
         //looping sms
-        //$looping = $no_of_pending_sms / $limit;
+        $looping = $no_of_pending_sms / $limit;
 
         //iterate looping
-        for ($i = 1; $i <= 2; $i++) {
+        for ($i = 1; $i <= $looping; $i++) {
             $recipients = SmsLog::select('id', 'phone', 'message', 'sender')
-                ->where(['message_id' => 'DP5TZ8AMCBX', 'gateway_status' => 'REJECTED', 'status' => 'REJECTED'])
+                ->where(['message_id' => 'KE38MCPU18R', 'gateway_status' => 'REJECTED', 'status' => 'REJECTED'])
                 ->take($limit)->get();
 
             foreach ($recipients as $val) {
@@ -58,7 +58,7 @@ class CronJobController extends Controller
                     $sms_log->gateway_code = $result->code;
                     $sms_log->gateway_message = $result->message;
                     $sms_log->status = "SENT";
-                    $sms_log->sent_at = date('2022-12-06 17:54:43');
+                    $sms_log->sent_at = date('Y-m-d H:i:s');
                     $sms_log->save();
 
                     //TODO: deduct bundle
@@ -69,7 +69,7 @@ class CronJobController extends Controller
                     $sms_log->gateway_code = $result->code;
                     $sms_log->gateway_message = $result->message;
                     $sms_log->status = "REJECTED";
-                    $sms_log->sent_at = date('2022-12-06 17:54:43');
+                    $sms_log->sent_at = date('Y-m-d H:i:s');
                     $sms_log->save();
                 }
             }
