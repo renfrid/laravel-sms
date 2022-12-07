@@ -20,7 +20,7 @@ class CronJobController extends Controller
     function send_sms()
     {
         //limit
-        $limit = 100;
+        $limit = 2000;
         $no_of_pending_sms = SmsLog::where(['status' => 'PENDING'])->count();
 
         //looping sms
@@ -90,7 +90,9 @@ class CronJobController extends Controller
         $current_date = date('Y-m-d H:i:s');
 
         //limit
-        $limit = 100;
+        $limit = 2000;
+
+        //pending sms
         $no_of_pending_sms = SmsLog::where(['schedule' => 1])
             ->where('schedule_at', '<=', $current_date)
             ->where(function ($query) {
@@ -159,61 +161,48 @@ class CronJobController extends Controller
     //delivery report
     function delivery_report()
     {
-        //limit
-        $limit = 100;
-        $no_of_sent_sms = SmsLog::where(function ($query) {
+        //take all recipients for delivery report
+        $recipients = SmsLog::select('id', 'gateway_id', 'phone')->where(function ($query) {
             $query->where(['gateway_status' => 'SENT'])
-                ->orWhere(['gateway_status' => 'PENDING'])
-                ->orWhere(['gateway_status' => 'REJECTED']);
-        })->count();
+                ->orWhere(['gateway_status' => 'PENDING']);
+        })->get();
 
-        //looping sms
-        $looping = $no_of_sent_sms / $limit;
+        foreach ($recipients as $val) {
+            //create arr data
+            if ($val->gateway_id != null) {
+                $postData = array(
+                    'request_id' => $val->gateway_id,
+                    'dest_addr' => $this->messaging->castPhone($val->phone)
+                );
 
-        //iterate looping
-        for ($i = 1; $i <= ceil($looping); $i++) {
-            $recipients = SmsLog::select('id', 'gateway_id', 'phone')->where(function ($query) {
-                $query->where(['gateway_status' => 'SENT'])
-                    ->orWhere(['gateway_status' => 'PENDING'])
-                    ->orWhere(['gateway_status' => 'REJECTED']);
-            })->take($limit)->get();
+                //post data
+                $response = $this->messaging->deliveryReport($postData);
+                $result = json_decode($response);
 
-            foreach ($recipients as $val) {
-                //create arr data
-                if ($val->gateway_id != null) {
-                    $postData = array(
-                        'request_id' => $val->gateway_id,
-                        'dest_addr' => $this->messaging->castPhone($val->phone)
-                    );
+                echo "<pre>";
+                print_r($result);
 
-                    //post data
-                    $response = $this->messaging->deliveryReport($postData);
-                    $result = json_decode($response);
+                //sms log
+                $sms_log = SmsLog::findOrFail($val->id);
 
-                    echo "<pre>";
-                    print_r($result);
-
-                    //sms log
-                    $sms_log = SmsLog::findOrFail($val->id);
-
-                    //check for errors
-                    if (isset($result->error)) {
-                        if ($result->error == 'Invalid request_id or dest_addr') {
-                            //change status to  DELIVERED
-                            $sms_log->gateway_status = "DELIVERED";
-                            $sms_log->delivered_at = date('Y-m-d H:i:s');
-                        }
-                    } else {
-                        //change status to DELIVERED or REJECTED or UNDELIVERED or PENDING
-                        $sms_log->gateway_status = $result->status;
+                //check for errors
+                if (isset($result->error)) {
+                    if ($result->error == 'Invalid request_id or dest_addr') {
+                        //change status to  DELIVERED
+                        $sms_log->gateway_status = "DELIVERED";
                         $sms_log->delivered_at = date('Y-m-d H:i:s');
                     }
-                    //save
-                    $sms_log->save();
+                } else {
+                    //change status to DELIVERED or UNDELIVERED or PENDING
+                    $sms_log->gateway_status = $result->status;
+                    $sms_log->delivered_at = date('Y-m-d H:i:s');
                 }
+                //save
+                $sms_log->save();
             }
         }
 
+        //response
         echo response()->json(["error" => false, "success_msg" => "Delivery report success!"]);
     }
 }
