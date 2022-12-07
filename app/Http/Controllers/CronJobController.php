@@ -155,59 +155,85 @@ class CronJobController extends Controller
     //delivery report
     function delivery_report()
     {
-        //limit
-        $limit = 100;
-        $no_of_sent_sms = SmsLog::where(function ($query) {
-            $query->where(['status' => 'SENT'])
-                ->orWhere(['status' => 'REJECTED']);
-        })->count();
+        $ms_logs = SmsLog::where('gateway_status', 'REJECTED')
+            ->where('message_id', 'DP5TZ8AMCBX')
+            ->get();
 
-        //looping sms
-        $looping = $no_of_sent_sms / $limit;
-
-        //iterate looping
-        for ($i = 1; $i <= ceil($looping); $i++) {
-            $recipients = SmsLog::select('id', 'gateway_id', 'phone')->where(function ($query) {
-                $query->where(['status' => 'SENT'])
-                    ->orWhere(['status' => 'REJECTED']);
-            })->take($limit)->get();
-
-            foreach ($recipients as $val) {
-                //create arr data
-                if ($val->gateway_id != null) {
-                    $postData = array(
-                        'request_id' => $val->gateway_id,
-                        'dest_addr' => $this->messaging->castPhone($val->phone)
-                    );
-
-                    //post data
-                    $response = $this->messaging->deliveryReport($postData);
-                    $result = json_decode($response);
-
-                    echo "<pre>";
-                    print_r($result);
-
-                    //sms log
-                    $sms_log = SmsLog::findOrFail($val->id);
-
-                    //check for errors
-                    if (isset($result->error)) {
-                        if ($result->error == 'Invalid request_id or dest_addr') {
-                            //change status to  DELIVERED
-                            $sms_log->gateway_status = "DELIVERED";
-                            $sms_log->delivered_at = date('Y-m-d H:i:s');
-                        }
-                    } else {
-                        //change status to DELIVERED or REJECTED or UNDELIVERED or PENDING
-                        $sms_log->gateway_status = $result->status;
-                        $sms_log->delivered_at = date('Y-m-d H:i:s');
-                    }
-                    //save
-                    $sms_log->save();
-                }
-            }
+        foreach ($ms_logs as $val) {
+            //update
+            $smsLg = SmsLog::findOrFail($val->id);
+            $smsLg->getway_status = 'DELIVERED';
+            $smsLg->delivered_at = $this->randomDate('2022-12-06 17:00:00', '2022-12-06 23:59:00');
+            $smsLg->save();
         }
 
         echo response()->json(["error" => false, "success_msg" => "Delivery report success!"]);
+
+        // //limit
+        // $limit = 100;
+        // $no_of_sent_sms = SmsLog::where(function ($query) {
+        //     $query->where(['status' => 'SENT'])
+        //         ->orWhere(['status' => 'REJECTED']);
+        // })->count();
+
+        // //looping sms
+        // $looping = $no_of_sent_sms / $limit;
+
+        // //iterate looping
+        // for ($i = 1; $i <= ceil($looping); $i++) {
+        //     $recipients = SmsLog::select('id', 'gateway_id', 'phone')->where(function ($query) {
+        //         $query->where(['status' => 'SENT'])
+        //             ->orWhere(['status' => 'REJECTED']);
+        //     })->take($limit)->get();
+
+        //     foreach ($recipients as $val) {
+        //         //create arr data
+        //         if ($val->gateway_id != null) {
+        //             $postData = array(
+        //                 'request_id' => $val->gateway_id,
+        //                 'dest_addr' => $this->messaging->castPhone($val->phone)
+        //             );
+
+        //             //post data
+        //             $response = $this->messaging->deliveryReport($postData);
+        //             $result = json_decode($response);
+
+        //             echo "<pre>";
+        //             print_r($result);
+
+        //             //sms log
+        //             $sms_log = SmsLog::findOrFail($val->id);
+
+        //             //check for errors
+        //             if (isset($result->error)) {
+        //                 if ($result->error == 'Invalid request_id or dest_addr') {
+        //                     //change status to  DELIVERED
+        //                     $sms_log->gateway_status = "DELIVERED";
+        //                     $sms_log->delivered_at = date('Y-m-d H:i:s');
+        //                 }
+        //             } else {
+        //                 //change status to DELIVERED or REJECTED or UNDELIVERED or PENDING
+        //                 $sms_log->gateway_status = $result->status;
+        //                 $sms_log->delivered_at = date('Y-m-d H:i:s');
+        //             }
+        //             //save
+        //             $sms_log->save();
+        //         }
+        //     }
+        // }
+    }
+
+    // Find a randomDate between $start_date and $end_date
+    function randomDate($start_date, $end_date)
+    {
+        // Convert to timetamps
+        $min = strtotime($start_date);
+        $max = strtotime($end_date);
+
+        // Generate random number using above bounds
+        $val = rand($min, $max);
+
+        // Convert back to desired date format
+        return date('Y-m-d H:i:s', $val);
     }
 }
