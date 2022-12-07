@@ -20,15 +20,16 @@ class CronJobController extends Controller
     function send_sms()
     {
         //limit
-        $limit = 100;
-        $no_of_pending_sms = SmsLog::where(['message_id' => 'DP5TZ8AMCBX', 'gateway_status' => 'REJECTED'])->count();
+        $limit = 200;
+        $no_of_pending_sms = SmsLog::where(['message_id' => 'DP5TZ8AMCBX', 'gateway_status' => 'REJECTED', 'status' => 'REJECTED'])->count();
 
         //looping sms
         $looping = $no_of_pending_sms / $limit;
 
         //iterate looping
-        for ($i = 1; $i <= ceil($looping); $i++) {
-            $recipients = SmsLog::select('id', 'phone', 'message', 'sender')->where(['message_id' => 'DP5TZ8AMCBX', 'gateway_status' => 'REJECTED'])
+        for ($i = 1; $i <= 2; $i++) {
+            $recipients = SmsLog::select('id', 'phone', 'message', 'sender')
+                ->where(['message_id' => 'DP5TZ8AMCBX', 'gateway_status' => 'REJECTED', 'status' => 'REJECTED'])
                 ->take($limit)->get();
 
             foreach ($recipients as $val) {
