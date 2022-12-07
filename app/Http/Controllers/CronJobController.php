@@ -46,6 +46,9 @@ class CronJobController extends Controller
                 $response = $this->messaging->sendSMS($postData);
                 $result = json_decode($response);
 
+                echo "<pre>";
+                print_r($result);
+
                 //check for successful or failure of message
                 if ($result->code == 100) {
                     //update sms status
@@ -116,6 +119,8 @@ class CronJobController extends Controller
                 //post data
                 $response = $this->messaging->sendSMS($postData);
                 $result = json_decode($response);
+
+
 
                 //check for successful or failure of message
                 if ($result->code == 100) {
