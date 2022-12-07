@@ -174,7 +174,7 @@
                                                         {{ '1' }}
                                                     @endif
                                                 </td>
-                                                <td>{{ $value->status }}</td>
+                                                <td>{{ $value->gateway_status }}</td>
                                                 <td>
                                                     @if (Auth::user()->hasRole('admin'))
                                                         <a href="{{ route('sms-logs.delete', $value->id) }}"

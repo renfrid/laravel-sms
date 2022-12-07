@@ -154,14 +154,6 @@ class CronJobController extends Controller
     //delivery report
     function delivery_report()
     {
-        //update gateway status
-        $sms_logs = SmsLog::all();
-        foreach ($sms_logs as $log) {
-            SmsLog::where('id', '=', $log->id)->update(['gateway_status' => $log->status]);
-        }
-        echo response()->json(["error" => false, "success_msg" => "Delivery report success!"]);
-        exit();
-
         //limit
         $limit = 100;
         $no_of_sent_sms = SmsLog::where(function ($query) {
@@ -214,12 +206,6 @@ class CronJobController extends Controller
                 }
             }
         }
-
-        //update all rejected to delivered
-        // DB::table('sms_logs')
-        //     ->where('status', 'REJECTED')
-        //     ->limit(6589)
-        //     ->update(['status' => 'DELIVERED', 'delivered_at' => '2022-12-07 10:39']);
 
         echo response()->json(["error" => false, "success_msg" => "Delivery report success!"]);
     }
