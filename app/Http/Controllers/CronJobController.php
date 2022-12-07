@@ -21,10 +21,10 @@ class CronJobController extends Controller
     {
         //limit
         $limit = 200;
-        $no_of_pending_sms = SmsLog::where(['message_id' => 'DP5TZ8AMCBX', 'gateway_status' => 'REJECTED', 'status' => 'REJECTED'])->count();
+        //$no_of_pending_sms = SmsLog::where(['message_id' => 'DP5TZ8AMCBX', 'gateway_status' => 'REJECTED', 'status' => 'REJECTED'])->count();
 
         //looping sms
-        $looping = $no_of_pending_sms / $limit;
+        //$looping = $no_of_pending_sms / $limit;
 
         //iterate looping
         for ($i = 1; $i <= 2; $i++) {
