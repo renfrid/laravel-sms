@@ -58,6 +58,7 @@ class CronJobController extends Controller
                     $sms_log->gateway_code = $result->code;
                     $sms_log->gateway_message = $result->message;
                     $sms_log->status = "SENT";
+                    $sms_log->gateway_status = "SENT";
                     $sms_log->sent_at = date('Y-m-d H:i:s');
                     $sms_log->save();
 
@@ -69,6 +70,7 @@ class CronJobController extends Controller
                     $sms_log->gateway_code = $result->code;
                     $sms_log->gateway_message = $result->message;
                     $sms_log->status = "REJECTED";
+                    $sms_log->gateway_status = "REJECTED";
                     $sms_log->sent_at = date('Y-m-d H:i:s');
                     $sms_log->save();
                 }
