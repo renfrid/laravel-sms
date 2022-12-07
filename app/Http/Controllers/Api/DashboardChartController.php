@@ -25,9 +25,9 @@ class DashboardChartController extends Controller
 
             //query sms
             $total_sms = SmsLog::whereYear('created_at', '=', $year)->whereMonth('created_at', '=', $month)->count();
-            $pending_sms = SmsLog::where('status', '=', 'PENDING')->whereYear('created_at', '=', $year)->whereMonth('created_at', '=', $month)->count();
-            $delivered_sms = SmsLog::where('status', '=', 'DELIVERED')->whereYear('created_at', '=', $year)->whereMonth('created_at', '=', $month)->count();
-            $rejected_sms = SmsLog::where('status', '=', 'REJECTED')->whereYear('created_at', '=', $year)->whereMonth('created_at', '=', $month)->count();
+            $pending_sms = SmsLog::where('gateway_status', '=', 'PENDING')->whereYear('created_at', '=', $year)->whereMonth('created_at', '=', $month)->count();
+            $delivered_sms = SmsLog::where('gateway_status', '=', 'DELIVERED')->whereYear('created_at', '=', $year)->whereMonth('created_at', '=', $month)->count();
+            $rejected_sms = SmsLog::where('gateway_status', '=', 'UNDELIVERED')->whereYear('created_at', '=', $year)->whereMonth('created_at', '=', $month)->count();
 
             //month_lists
             $month_lists[] = date("F", mktime(0, 0, 0, $month, 10)) . ',' . $year;

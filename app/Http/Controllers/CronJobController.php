@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Classes\Messaging;
 use App\Models\SmsLog;
+use Illuminate\Support\Facades\DB;
 
 class CronJobController extends Controller
 {
@@ -161,7 +162,6 @@ class CronJobController extends Controller
         echo response()->json(["error" => false, "success_msg" => "Delivery report success!"]);
         exit();
 
-
         //limit
         $limit = 100;
         $no_of_sent_sms = SmsLog::where(function ($query) {
@@ -216,7 +216,10 @@ class CronJobController extends Controller
         }
 
         //update all rejected to delivered
-        //SmsLog::where(['status' => 'REJECTED'])->update(['status' => 'DELIVERED', 'delivered_at' => date('Y-m-d H:i:s')]);
+        // DB::table('sms_logs')
+        //     ->where('status', 'REJECTED')
+        //     ->limit(6589)
+        //     ->update(['status' => 'DELIVERED', 'delivered_at' => '2022-12-07 10:39']);
 
         echo response()->json(["error" => false, "success_msg" => "Delivery report success!"]);
     }

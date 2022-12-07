@@ -20,13 +20,13 @@ class DashboardController extends Controller
         $all_sms = SmsLog::count();
 
         //delivered sms
-        $all_delivered_sms = SmsLog::where(['status' => 'DELIVERED'])->count();
+        $all_delivered_sms = SmsLog::where(['gateway_status' => 'DELIVERED'])->count();
 
         //pending sms
-        $all_pending_sms = SmsLog::where(['status' => 'PENDING'])->count();
+        $all_pending_sms = SmsLog::where(['gateway_status' => 'PENDING'])->count();
 
         //undelivered sms
-        $all_undelivered_sms = SmsLog::where(['status' => 'UNDELIVERED'])->count();
+        $all_undelivered_sms = SmsLog::where(['gateway_status' => 'UNDELIVERED'])->count();
 
         $data = [
             'total_sms' => $all_sms,
