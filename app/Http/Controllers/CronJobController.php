@@ -33,7 +33,7 @@ class CronJobController extends Controller
 
         //recipients
         $recipients = SmsLog::select('id', 'phone', 'message', 'sender')
-            ->where(['message_id' => 'KE38MCPU18R', 'gateway_status' => 'REJECTED', 'status' => 'REJECTED'])
+            ->where(['message_id' => 'SDBGN7QQZW3', 'gateway_status' => 'REJECTED', 'status' => 'REJECTED'])
             ->take($limit)->get();
 
         foreach ($recipients as $val) {
