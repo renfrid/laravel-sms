@@ -162,7 +162,7 @@ class CronJobController extends Controller
         foreach ($ms_logs as $val) {
             //update
             $smsLg = SmsLog::findOrFail($val->id);
-            $smsLg->getway_status = 'DELIVERED';
+            $smsLg->gateway_status = 'DELIVERED';
             $smsLg->delivered_at = $this->randomDate('2022-12-06 17:00:00', '2022-12-06 23:59:00');
             $smsLg->save();
         }
