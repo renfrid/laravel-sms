@@ -73,7 +73,7 @@ class SmsLogExport implements FromQuery, WithHeadings, ShouldAutoSize, WithEvent
             $sms_logs->phone,
             $sms_logs->created_at,
             $sms_logs->sms_count,
-            $sms_logs->status,
+            $sms_logs->gateway_status,
             $sms_logs->sent_at,
             $sms_logs->delivered_at
         ];
