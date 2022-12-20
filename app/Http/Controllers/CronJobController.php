@@ -93,6 +93,10 @@ class CronJobController extends Controller
                 $query->where('status', '=', 'PENDING');
             })->take($limit)->get();
 
+            echo "<pre>";
+            print_r($recipients);
+            exit();
+
         if ($recipients->isNotEmpty()) {
             foreach ($recipients as $val) {
                 //create arr data
