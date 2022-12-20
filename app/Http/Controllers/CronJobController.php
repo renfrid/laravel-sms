@@ -93,9 +93,8 @@ class CronJobController extends Controller
                 $query->where('status', '=', 'PENDING');
             })->take($limit)->get();
 
-            echo "<pre>";
-            print_r($recipients);
-            exit();
+        echo "<pre>";
+        print_r($recipients);
 
         if ($recipients->isNotEmpty()) {
             foreach ($recipients as $val) {
