@@ -24,7 +24,7 @@ class CronJobController extends Controller
 
         //recipients
         $recipients = SmsLog::select('id', 'phone', 'message', 'sender')
-            ->where(['schedule' => null])
+            ->where('schedule', '=', null)
             ->where(function ($query) {
                 $query->where('status', '=', 'PENDING');
             })->take($limit)->get();
@@ -83,10 +83,11 @@ class CronJobController extends Controller
         $current_date = date('Y-m-d H:i:s');
 
         //limit
-        $limit = 1000;
+        $limit = 2000;
 
         //recipients
-        $recipients = SmsLog::select('id', 'phone', 'message', 'sender')->where(['schedule' => 1])
+        $recipients = SmsLog::select('id', 'phone', 'message', 'sender')
+            ->where('schedule', '=', 1)
             ->where('schedule_at', '<=', $current_date)
             ->where(function ($query) {
                 $query->where('status', '=', 'PENDING');
