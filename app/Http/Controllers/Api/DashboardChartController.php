@@ -15,7 +15,7 @@ class DashboardChartController extends Controller
         $total_sms_lists = [];
         $pending_sms_lists = [];
         $delivered_sms_lists = [];
-        $rejected_sms_lists = [];
+        $undelivered_sms_lists = [];
 
         //sms query
         for ($i = 0; $i <= 11; $i++) {
@@ -27,14 +27,14 @@ class DashboardChartController extends Controller
             $total_sms = SmsLog::whereYear('created_at', '=', $year)->whereMonth('created_at', '=', $month)->count();
             $pending_sms = SmsLog::where('gateway_status', '=', 'PENDING')->whereYear('created_at', '=', $year)->whereMonth('created_at', '=', $month)->count();
             $delivered_sms = SmsLog::where('gateway_status', '=', 'DELIVERED')->whereYear('created_at', '=', $year)->whereMonth('created_at', '=', $month)->count();
-            $rejected_sms = SmsLog::where('gateway_status', '=', 'UNDELIVERED')->whereYear('created_at', '=', $year)->whereMonth('created_at', '=', $month)->count();
+            $undelivered_sms = SmsLog::where('gateway_status', '=', 'UNDELIVERED')->whereYear('created_at', '=', $year)->whereMonth('created_at', '=', $month)->count();
 
             //month_lists
             $month_lists[] = date("F", mktime(0, 0, 0, $month, 10)) . ',' . $year;
             $total_sms_lists[] = (int) $total_sms;
             $pending_sms_lists[] = (int) $pending_sms;
             $delivered_sms_lists[] = (int) $delivered_sms;
-            $rejected_sms_lists[] = (int) $rejected_sms;
+            $undelivered_sms_lists[] = (int) $undelivered_sms;
         }
 
         $data_array = [
@@ -42,7 +42,7 @@ class DashboardChartController extends Controller
             'total_sms' => $total_sms_lists,
             'pending_sms' => $pending_sms_lists,
             'delivered_sms' => $delivered_sms_lists,
-            'rejected_sms' => $rejected_sms_lists
+            'undelivered_sms' => $undelivered_sms_lists
         ];
 
         //response

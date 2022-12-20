@@ -14,8 +14,8 @@ $.getJSON('api/dashboard/monthly_status', (data) => {
                 data: data.data.delivered_sms
             },
             {
-                name: "Rejected SMS",
-                data: data.data.rejected_sms
+                name: "Undelivered SMS",
+                data: data.data.undelivered_sms
             }],
             chart: {
                 type: 'bar',

@@ -21,7 +21,56 @@
     <!-- end page title -->
 
     <div class="row project-wrapper">
-        <div class="col-xxl-8">
+        <div class="card">
+
+            <div class="card-header align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">Filtering</h4>
+                <div class="flex-shrink-0">
+                </div>
+            </div><!-- end card header -->
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        {!! Form::open(['url' => route('dashboard'), 'method' => 'POST', 'class' => 'form-horizontal']) !!}
+                        {{ Form::token() }}
+
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    {{ Form::date('start_at', old('start_at'), ['placeholder="Start Date..."', 'class="form-control"']) }}
+                                </div>
+                            </div>
+                            <!--./col -->
+
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    {{ Form::date('end_at', old('end_at'), ['placeholder="End Date..."', 'class="form-control"']) }}
+                                </div>
+                            </div>
+                            <!--./col -->
+
+                            <div class="col-lg-2">
+                                <div class="mb-3">
+                                    <div class="text-sm-end d-none d-sm-block">
+                                        <button type="submit" name="filter" class="btn btn-secondary">
+                                            <i class="bx bx-search"></i> Filter
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--./col -->
+                        </div>
+                        <!--./row -->
+                        {{ Form::close() }}
+                    </div>
+                    <!--./col-lg-12 -->
+                </div>
+                <!--./row -->
+            </div>
+        </div>
+
+        <div class="col-xxl-12">
             <div class="row">
                 <div class="col-xl-3">
                     <div class="card card-animate">
@@ -123,7 +172,7 @@
                         <div class="card-header border-0 align-items-center d-flex">
                             <h4 class="card-title mb-0 flex-grow-1">SMS Overview</h4>
                             <div>
-                                <button type="button" class="btn btn-soft-secondary btn-sm">
+                                {{-- <button type="button" class="btn btn-soft-secondary btn-sm">
                                     ALL
                                 </button>
                                 <button type="button" class="btn btn-soft-secondary btn-sm">
@@ -134,7 +183,7 @@
                                 </button>
                                 <button type="button" class="btn btn-soft-primary btn-sm">
                                     1Y
-                                </button>
+                                </button> --}}
                             </div>
                         </div><!-- end card header -->
 
@@ -188,7 +237,7 @@
             </div><!-- end row -->
         </div><!-- end col -->
 
-        <div class="col-xxl-4">
+        <div class="col-xxl-12">
             <div class="card">
                 <div class="card-header border-0">
                     <h4 class="card-title mb-0">Scheduled SMS</h4>

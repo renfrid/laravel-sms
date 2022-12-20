@@ -29,7 +29,7 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::get('/', [LoginController::class, 'showLoginForm']);
 Route::get('/home', [DashboardController::class, 'index'])->name('home');
-Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::any('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 //login
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
