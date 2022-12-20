@@ -22,9 +22,6 @@ class DashboardController extends Controller
         $all_pending_sms = 0;
         $all_undelivered_sms = 0;
 
-        //sms logs
-        $sms_logs = SmsLog::orderBy('created_at');
-
         if (isset($_POST['filter'])) {
             //post variable
             $start_at = $request->input('start_at');
@@ -36,36 +33,36 @@ class DashboardController extends Controller
                 $end_at = date('Y-m-d', strtotime($end_at));
 
                 //total sms
-                $all_sms = $sms_logs->whereBetween('sms_logs.created_at', [$start_at, $end_at])
+                $all_sms = SmsLog::whereBetween('sms_logs.created_at', [$start_at, $end_at])
                     ->count();
 
                 //delivered sms
-                $all_delivered_sms = $sms_logs->where(['sms_logs.gateway_status' => 'DELIVERED'])
+                $all_delivered_sms = SmsLog::where(['sms_logs.gateway_status' => 'DELIVERED'])
                     ->whereBetween('sms_logs.created_at', [$start_at, $end_at])
                     ->count();
 
                 //pending sms
-                $all_pending_sms = $sms_logs->where(['sms_logs.gateway_status' => 'PENDING'])
+                $all_pending_sms = SmsLog::where(['sms_logs.gateway_status' => 'PENDING'])
                     ->whereBetween('sms_logs.created_at', [$start_at, $end_at])
                     ->count();
 
                 //undelivered sms
-                $all_undelivered_sms = $sms_logs->where(['sms_logs.gateway_status' => 'UNDELIVERED'])
+                $all_undelivered_sms = SmsLog::where(['sms_logs.gateway_status' => 'UNDELIVERED'])
                     ->whereBetween('sms_logs.created_at', [$start_at, $end_at])
                     ->count();
             }
         } else {
             //total sms
-            $all_sms = $sms_logs->count();
+            $all_sms = SmsLog::count();
 
             //delivered sms
-            $all_delivered_sms = $sms_logs->where(['gateway_status' => 'DELIVERED'])->count();
+            $all_delivered_sms = SmsLog::where(['gateway_status' => 'DELIVERED'])->count();
 
             //pending sms
-            $all_pending_sms = $sms_logs->where(['gateway_status' => 'PENDING'])->count();
+            $all_pending_sms = SmsLog::where(['gateway_status' => 'PENDING'])->count();
 
             //undelivered sms
-            $all_undelivered_sms = $sms_logs->where(['gateway_status' => 'UNDELIVERED'])->count();
+            $all_undelivered_sms = SmsLog::where(['gateway_status' => 'UNDELIVERED'])->count();
         }
 
         //construct data
