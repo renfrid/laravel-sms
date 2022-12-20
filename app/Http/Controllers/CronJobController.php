@@ -20,7 +20,7 @@ class CronJobController extends Controller
     function send_sms()
     {
         //limit
-        $limit = 1000;
+        $limit = 200;
 
         //recipients
         $recipients = SmsLog::select('id', 'phone', 'message', 'sender')
