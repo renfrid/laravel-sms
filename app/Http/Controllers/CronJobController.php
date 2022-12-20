@@ -20,19 +20,25 @@ class CronJobController extends Controller
     function send_sms()
     {
         //limit
-        $limit = 2000;
-        $no_of_pending_sms = SmsLog::where(['gateway_status' => 'UNDELIVERED'])->count();
+        $limit = 1000;
+
+        //number of pending sms
+        $no_of_pending_sms = SmsLog::where(['schedule' => null])
+            ->where(function ($query) {
+                $query->where('status', '=', 'PENDING');
+            })->count();
 
         //looping sms
         $looping = $no_of_pending_sms / $limit;
 
         //iterate looping
         for ($i = 1; $i <= $looping; $i++) {
-
             //recipients
             $recipients = SmsLog::select('id', 'phone', 'message', 'sender')
-                ->where(['gateway_status' => 'UNDELIVERED'])
-                ->take($limit)->get();
+                ->where(['schedule' => null])
+                ->where(function ($query) {
+                    $query->where('status', '=', 'PENDING');
+                })->take($limit)->get();
 
             foreach ($recipients as $val) {
                 //create arr data
@@ -47,9 +53,6 @@ class CronJobController extends Controller
                 //post data
                 $response = $this->messaging->sendSMS($postData);
                 $result = json_decode($response);
-
-                echo "<pre>";
-                print_r($result);
 
                 //check for successful or failure of message
                 if ($result->code == 100) {
@@ -90,15 +93,14 @@ class CronJobController extends Controller
         $current_date = date('Y-m-d H:i:s');
 
         //limit
-        $limit = 2000;
+        $limit = 1000;
 
         //pending sms
         $no_of_pending_sms = SmsLog::where(['schedule' => 1])
             ->where('schedule_at', '<=', $current_date)
             ->where(function ($query) {
                 $query->where('status', '=', 'PENDING');
-            })
-            ->count();
+            })->count();
 
         //looping sms
         $looping = $no_of_pending_sms / $limit;
@@ -109,8 +111,7 @@ class CronJobController extends Controller
                 ->where('schedule_at', '<=', $current_date)
                 ->where(function ($query) {
                     $query->where('status', '=', 'PENDING');
-                })
-                ->take($limit)->get();
+                })->take($limit)->get();
 
             foreach ($recipients as $val) {
                 //create arr data
