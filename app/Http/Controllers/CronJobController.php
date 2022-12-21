@@ -174,13 +174,15 @@ class CronJobController extends Controller
                 if (isset($result->error)) {
                     if ($result->error == 'Invalid request_id or dest_addr') {
                         //change status to  DELIVERED
-                        $sms_log->gateway_status = "DELIVERED";
+                        $sms_log->gateway_status = "PENDING";
                         $sms_log->delivered_at = date('Y-m-d H:i:s');
                     }
                 } else {
-                    //change status to DELIVERED or UNDELIVERED or PENDING
-                    $sms_log->gateway_status = $result->status;
-                    $sms_log->delivered_at = date('Y-m-d H:i:s');
+                    if (isset($result->status)) {
+                        //change status to DELIVERED or UNDELIVERED or PENDING
+                        $sms_log->gateway_status = $result->status;
+                        $sms_log->delivered_at = date('Y-m-d H:i:s');
+                    }
                 }
                 //save
                 $sms_log->save();
