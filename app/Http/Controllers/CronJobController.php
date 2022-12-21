@@ -146,11 +146,15 @@ class CronJobController extends Controller
     //delivery report
     function delivery_report()
     {
+        //date range
+        $start_at = date('2022-12-19');
+        $end_at = date('2022-12-21');
+
         //take all recipients for delivery report
         $recipients = SmsLog::select('id', 'gateway_id', 'phone')->where(function ($query) {
             $query->where(['gateway_status' => 'SENT'])
                 ->orWhere(['gateway_status' => 'PENDING']);
-        })->get();
+        })->whereBetween('sms_logs.created_at', [$start_at, $end_at])->get();
 
         foreach ($recipients as $val) {
             //create arr data
