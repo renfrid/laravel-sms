@@ -175,31 +175,31 @@ class CronJobController extends Controller
                 print_r($postData);
 
                 //post data
-                // $response = $this->messaging->deliveryReport($postData);
-                // $result = json_decode($response);
+                $response = $this->messaging->deliveryReport($postData);
+                $result = json_decode($response);
 
-                // echo "<pre>";
-                // print_r($result);
+                echo "<pre>";
+                print_r($result);
 
-                // //sms log
-                // $sms_log = SmsLog::findOrFail($val->id);
+                //sms log
+                $sms_log = SmsLog::findOrFail($val->id);
 
-                // //check for errors
-                // if (isset($result->error)) {
-                //     if ($result->error == 'Invalid request_id or dest_addr') {
-                //         //change status to  DELIVERED
-                //         $sms_log->gateway_status = "PENDING";
-                //         $sms_log->delivered_at = date('Y-m-d H:i:s');
-                //     }
-                // } else {
-                //     //if (isset($result->status)) {
-                //     //change status to DELIVERED or UNDELIVERED or PENDING
-                //     $sms_log->gateway_status = $result->status;
-                //     $sms_log->delivered_at = date('Y-m-d H:i:s');
-                //     //}
-                // }
-                // //save
-                // $sms_log->save();
+                //check for errors
+                if (isset($result->error)) {
+                    if ($result->error == 'Invalid request_id or dest_addr') {
+                        //change status to  DELIVERED
+                        $sms_log->gateway_status = "PENDING";
+                        $sms_log->delivered_at = date('Y-m-d H:i:s');
+                    }
+                } else {
+                    if (isset($result->status)) {
+                        //change status to DELIVERED or UNDELIVERED or PENDING
+                        $sms_log->gateway_status = $result->status;
+                        $sms_log->delivered_at = date('Y-m-d H:i:s');
+                    }
+                }
+                //save
+                $sms_log->save();
             }
         }
 
