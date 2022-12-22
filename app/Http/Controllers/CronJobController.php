@@ -156,12 +156,14 @@ class CronJobController extends Controller
 
         //->orWhere(['gateway_status' => 'PENDING']);
 
-        $limit = 100;
+        $limit = 10;
 
         //take all recipients for delivery report
         $recipients = SmsLog::select('id', 'gateway_id', 'phone')->where(function ($query) {
             $query->where(['gateway_status' => 'SENT']);
         })->whereBetween('sms_logs.created_at', [$start_at, $end_at])->take($limit)->get();
+
+        dd($recipients);
 
         foreach ($recipients as $val) {
             //create arr data
@@ -171,12 +173,14 @@ class CronJobController extends Controller
                     'dest_addr' => $this->messaging->castPhone($val->phone)
                 );
 
-                //post data
-                $response = $this->messaging->deliveryReport($postData);
-                $result = json_decode($response);
+                print_r($postData);
 
-                echo "<pre>";
-                print_r($result);
+                //post data
+                // $response = $this->messaging->deliveryReport($postData);
+                // $result = json_decode($response);
+
+                // echo "<pre>";
+                // print_r($result);
 
                 // //sms log
                 // $sms_log = SmsLog::findOrFail($val->id);
