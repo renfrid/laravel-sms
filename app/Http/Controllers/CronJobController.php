@@ -166,9 +166,6 @@ class CronJobController extends Controller
         foreach ($recipients as $val) {
             //create arr data
             if ($val->gateway_id != null) {
-                echo "reaches here";
-
-
                 $postData = array(
                     'request_id' => $val->gateway_id,
                     'dest_addr' => $this->messaging->castPhone($val->phone)
@@ -178,11 +175,11 @@ class CronJobController extends Controller
                 print_r($postData);
 
                 //post data
-                // $response = $this->messaging->deliveryReport($postData);
-                // $result = json_decode($response);
+                $response = $this->messaging->deliveryReport($postData);
+                $result = json_decode($response);
 
-                // echo "<pre>";
-                // print_r($result);
+                echo "<pre>";
+                print_r($result);
 
                 // //sms log
                 // $sms_log = SmsLog::findOrFail($val->id);
