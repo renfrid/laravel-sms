@@ -156,7 +156,7 @@ class CronJobController extends Controller
 
         //->orWhere(['gateway_status' => 'PENDING']);
 
-        $limit = 3000;
+        $limit = 100;
 
         //take all recipients for delivery report
         $recipients = SmsLog::select('id', 'gateway_id', 'phone')->where(function ($query) {
@@ -178,25 +178,25 @@ class CronJobController extends Controller
                 echo "<pre>";
                 print_r($result);
 
-                //sms log
-                $sms_log = SmsLog::findOrFail($val->id);
+                // //sms log
+                // $sms_log = SmsLog::findOrFail($val->id);
 
-                //check for errors
-                if (isset($result->error)) {
-                    if ($result->error == 'Invalid request_id or dest_addr') {
-                        //change status to  DELIVERED
-                        $sms_log->gateway_status = "PENDING";
-                        $sms_log->delivered_at = date('Y-m-d H:i:s');
-                    }
-                } else {
-                    if (isset($result->status)) {
-                        //change status to DELIVERED or UNDELIVERED or PENDING
-                        $sms_log->gateway_status = $result->status;
-                        $sms_log->delivered_at = date('Y-m-d H:i:s');
-                    }
-                }
-                //save
-                $sms_log->save();
+                // //check for errors
+                // if (isset($result->error)) {
+                //     if ($result->error == 'Invalid request_id or dest_addr') {
+                //         //change status to  DELIVERED
+                //         $sms_log->gateway_status = "PENDING";
+                //         $sms_log->delivered_at = date('Y-m-d H:i:s');
+                //     }
+                // } else {
+                //     //if (isset($result->status)) {
+                //     //change status to DELIVERED or UNDELIVERED or PENDING
+                //     $sms_log->gateway_status = $result->status;
+                //     $sms_log->delivered_at = date('Y-m-d H:i:s');
+                //     //}
+                // }
+                // //save
+                // $sms_log->save();
             }
         }
 
