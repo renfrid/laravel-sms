@@ -150,6 +150,24 @@ class CronJobController extends Controller
     //delivery report
     function delivery_report()
     {
+
+        $postData = array(
+            'request_id' => '58006964',
+            'dest_addr' => $this->messaging->castPhone("0717705746")
+        );
+
+        echo "<pre>";
+        print_r($postData);
+
+        //post data
+        $response = $this->messaging->deliveryReport($postData);
+        $result = json_decode($response);
+
+        echo "<pre>";
+        print_r($result);
+
+
+        exit();
         //date range
         $start_at = date('2022-12-19');
         $end_at = date('2022-12-21');
