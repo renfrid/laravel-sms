@@ -175,11 +175,11 @@ class CronJobController extends Controller
                 print_r($postData);
 
                 //post data
-                $response = $this->messaging->deliveryReport($postData);
-                $result = json_decode($response);
+                // $response = $this->messaging->deliveryReport($postData);
+                // $result = json_decode($response);
 
-                echo "<pre>";
-                print_r($result);
+                // echo "<pre>";
+                // print_r($result);
 
                 // //sms log
                 // $sms_log = SmsLog::findOrFail($val->id);
