@@ -164,7 +164,7 @@ class CronJobController extends Controller
 
         echo "<pre>";
         print_r($recipients);
-        exit();
+        // exit();
 
         foreach ($recipients as $val) {
             //create arr data
