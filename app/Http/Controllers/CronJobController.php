@@ -151,7 +151,7 @@ class CronJobController extends Controller
     function delivery_report()
     {
         //limit
-        $limit = 6000;
+        $limit = 10000;
 
         //date range
         $start_at = date('2022-12-19');
