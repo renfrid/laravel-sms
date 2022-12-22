@@ -142,8 +142,9 @@ class Messaging
             die(curl_error($ch));
         }
 
+        //logging the response
         Log::debug("response", [$response]);
-        
+
         //resurn repsonse
         return $response;
     }
