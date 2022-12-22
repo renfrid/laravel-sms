@@ -20,14 +20,18 @@ class CronJobController extends Controller
     function send_sms()
     {
         //limit
-        $limit = 200;
+        $limit = 2000;
+
+        //date range
+        $start_at = date('2022-12-19');
+        $end_at = date('2022-12-21');
 
         //recipients
         $recipients = SmsLog::select('id', 'phone', 'message', 'sender')
             ->where('schedule', '=', null)
             ->where(function ($query) {
-                $query->where('status', '=', 'PENDING');
-            })->take($limit)->get();
+                $query->where('gateway_status', '=', 'UNDELIVERED');
+            })->whereBetween('sms_logs.created_at', [$start_at, $end_at])->take($limit)->get();
 
         if ($recipients->isNotEmpty()) {
             foreach ($recipients as $val) {
@@ -90,7 +94,7 @@ class CronJobController extends Controller
             ->where('schedule', '=', 1)
             ->where('schedule_at', '<=', $current_date)
             ->where(function ($query) {
-                $query->where('status', '=', 'PENDING');
+                $query->where('gateway_status', '=', 'PENDING');
             })->take($limit)->get();
 
         echo "<pre>";
@@ -150,11 +154,17 @@ class CronJobController extends Controller
         $start_at = date('2022-12-19');
         $end_at = date('2022-12-21');
 
+        $limit = 6000;
+
         //take all recipients for delivery report
         $recipients = SmsLog::select('id', 'gateway_id', 'phone')->where(function ($query) {
             $query->where(['gateway_status' => 'SENT'])
                 ->orWhere(['gateway_status' => 'PENDING']);
-        })->whereBetween('sms_logs.created_at', [$start_at, $end_at])->get();
+        })->whereBetween('sms_logs.created_at', [$start_at, $end_at])->take($limit)->get();
+
+        echo "<pre>";
+        print_r($recipients);
+        exit();
 
         foreach ($recipients as $val) {
             //create arr data
