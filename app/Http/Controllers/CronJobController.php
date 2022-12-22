@@ -163,8 +163,6 @@ class CronJobController extends Controller
             $query->where(['gateway_status' => 'SENT']);
         })->whereBetween('sms_logs.created_at', [$start_at, $end_at])->take($limit)->get();
 
-        dd($recipients);
-
         foreach ($recipients as $val) {
             //create arr data
             if ($val->gateway_id != null) {
@@ -173,6 +171,7 @@ class CronJobController extends Controller
                     'dest_addr' => $this->messaging->castPhone($val->phone)
                 );
 
+                echo "<pre>";
                 print_r($postData);
 
                 //post data
