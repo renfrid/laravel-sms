@@ -154,7 +154,7 @@ class CronJobController extends Controller
         $start_at = date('2022-12-19');
         $end_at = date('2022-12-21');
 
-        $limit = 6000;
+        $limit = 4000;
 
         //take all recipients for delivery report
         $recipients = SmsLog::select('id', 'gateway_id', 'phone')->where(function ($query) {
