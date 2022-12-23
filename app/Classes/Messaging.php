@@ -113,6 +113,8 @@ class Messaging
     //activon to get delivery reports
     function deliveryReport($arr_data)
     {
+        set_time_limit(0);
+        
         // Setup cURL
         $ch = curl_init();
         error_reporting(E_ALL);
