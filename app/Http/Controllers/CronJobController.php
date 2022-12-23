@@ -150,6 +150,7 @@ class CronJobController extends Controller
     //delivery report
     function delivery_report()
     {
+        
         //limit
         $limit = 2000;
 
