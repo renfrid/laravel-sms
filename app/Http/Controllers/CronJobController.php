@@ -150,6 +150,9 @@ class CronJobController extends Controller
     //delivery report
     function delivery_report()
     {
+        $max_time = ini_get("max_execution_time");
+echo $max_time;
+exit();
         //limit
         $limit = 5000;
 
