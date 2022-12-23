@@ -159,8 +159,8 @@ class CronJobController extends Controller
 
         //take all recipients for delivery report
         $recipients = SmsLog::select('id', 'gateway_id', 'phone')->where(function ($query) {
-            $query->where(['gateway_status' => 'SENT']);
-            //->orWhere(['gateway_status' => 'PENDING']);
+            $query->where(['gateway_status' => 'SENT'])
+                ->orWhere(['gateway_status' => 'PENDING']);
         })->whereBetween('sms_logs.created_at', [$start_at, $end_at])->take($limit)->get();
 
         foreach ($recipients as $val) {
