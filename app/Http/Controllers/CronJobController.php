@@ -150,9 +150,6 @@ class CronJobController extends Controller
     //delivery report
     function delivery_report()
     {
-        $max_time = ini_get("max_execution_time");
-echo $max_time;
-exit();
         //limit
         $limit = 5000;
 
@@ -163,7 +160,7 @@ exit();
         //take all recipients for delivery report
         $recipients = SmsLog::select('id', 'gateway_id', 'phone')->where(function ($query) {
             $query->where(['gateway_status' => 'SENT']);
-                //->orWhere(['gateway_status' => 'PENDING']);
+            //->orWhere(['gateway_status' => 'PENDING']);
         })->whereBetween('sms_logs.created_at', [$start_at, $end_at])->take($limit)->get();
 
         foreach ($recipients as $val) {
