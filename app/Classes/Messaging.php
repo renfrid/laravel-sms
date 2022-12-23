@@ -113,8 +113,8 @@ class Messaging
     //activon to get delivery reports
     function deliveryReport($arr_data)
     {
-        //set_time_limit(0);
-        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '-1');
+        set_time_limit(0);
 
         // Setup cURL
         $ch = curl_init();
