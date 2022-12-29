@@ -63,6 +63,7 @@ Route::get('cron-jobs/send-scheduled-sms', [CronJobController::class, 'send_sche
 
 //cron for delivery report
 Route::get('cron-jobs/delivery-report', [CronJobController::class, 'delivery_report'])->name('cron-jobs.delivery-report');
+Route::get('cron-jobs/xls-delivery-report', [CronJobController::class, 'xls_delivery_report'])->name('cron-jobs.xls-delivery-report');
 
 //templates
 Route::get('templates/{id}/delete', [TemplateController::class, 'destroy'])->name('templates.delete');

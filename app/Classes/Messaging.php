@@ -187,6 +187,8 @@ class Messaging
         if (!empty($mobile)) {
             if (strlen($mobile) == 9) {
                 $phone = '0' . $mobile;
+            } else if (strlen($mobile) == 12) {
+                $phone = '0' . substr($mobile, -9);
             } else {
                 $phone = $mobile;
             }

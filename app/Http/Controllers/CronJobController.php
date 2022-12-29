@@ -5,7 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Classes\Messaging;
 use App\Models\SmsLog;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class CronJobController extends Controller
 {
@@ -147,11 +153,54 @@ class CronJobController extends Controller
         echo json_encode(['error' => false, "success_msg" => "Message sent to sms gateway"]);
     }
 
+    //load xls delivery report
+    function xls_delivery_report()
+    {
+        //date range
+        $start_at = date('2022-12-19');
+        $end_at = date('2022-12-21');
+
+        //deal with attachment
+        $path = 'assets/xls/Book2.xlsx';
+        $rows = Excel::toArray([], $path);
+
+        $count = 2;
+        $success = 0;
+
+        for ($i = 1; $i < sizeof($rows[0]); $i++) {
+            $phone = $rows[0][$i][5];
+            $phone = $this->messaging->addZeroOnPhone($phone);
+            $status = $rows[0][$i][4];
+            $delivered_date = $rows[0][$i][1];
+
+
+            //take all recipients for delivery report
+            $sms_log = SmsLog::where('phone', '=', $phone)
+                ->whereBetween('sms_logs.created_at', [$start_at, $end_at])->first();
+
+            if ($sms_log) {
+                if ($sms_log->gateway_status == 'DELIVERED' || $sms_log->gateway_status == 'UNDELIVERED') {
+                    if (is_numeric($delivered_date)) {
+                        //convert floating to datetime
+                        $unix_date = ($delivered_date - 25569) * 86400;
+                        $sms_log->delivered_at = gmdate("Y-m-d H:i:s", $unix_date);
+                    }
+                    $sms_log->save();
+
+                    //success
+                    $success++;
+                }
+            }
+        }
+        //response
+        echo response()->json(["error" => false, "success_msg" => $success . " delivery report success!"]);
+    }
+
     //delivery report
     function delivery_report()
     {
         //limit
-        $limit = 5000;
+        $limit = 100;
 
         //date range
         $start_at = date('2022-12-19');
@@ -162,6 +211,10 @@ class CronJobController extends Controller
             $query->where(['gateway_status' => 'SENT'])
                 ->orWhere(['gateway_status' => 'PENDING']);
         })->whereBetween('sms_logs.created_at', [$start_at, $end_at])->take($limit)->get();
+
+        // echo "<pre>";
+        // print_r($recipients);
+        // exit();
 
         foreach ($recipients as $val) {
             //create arr data
