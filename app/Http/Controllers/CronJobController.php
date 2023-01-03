@@ -22,7 +22,7 @@ class CronJobController extends Controller
     function send_sms()
     {
         //limit
-        $limit = 3000;
+        $limit = 2000;
 
         //recipients
         $recipients = SmsLog::select('id', 'phone', 'message', 'sender')
@@ -89,7 +89,7 @@ class CronJobController extends Controller
         $current_date = date('Y-m-d H:i:s');
 
         //limit
-        $limit = 3000;
+        $limit = 2000;
 
         //recipients
         $recipients = SmsLog::select('id', 'phone', 'message', 'sender')
@@ -98,10 +98,6 @@ class CronJobController extends Controller
             ->where(function ($query) {
                 $query->where('status', '=', 'PENDING');
             })->take($limit)->get();
-
-        echo "<pre>";
-        print_r($recipients);
-        exit();
 
         if ($recipients->isNotEmpty()) {
             foreach ($recipients as $val) {
