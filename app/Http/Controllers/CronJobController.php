@@ -35,6 +35,10 @@ class CronJobController extends Controller
                 $query->where('status', '=', 'PENDING');
             })->take($limit)->get();
 
+        echo "<pre>";
+        print_r($recipients);
+        exit();
+
         if ($recipients->isNotEmpty()) {
             foreach ($recipients as $val) {
                 //create arr data
@@ -92,19 +96,20 @@ class CronJobController extends Controller
         $limit = 5000;
 
         //date range
-        $start_at = date('2022-12-19');
-        $end_at = date('2022-12-21');
+        $start_at = date('2023-01-03');
+        $end_at = date('2023-01-03');
 
         //recipients
         $recipients = SmsLog::select('id', 'phone', 'message', 'sender')
             ->where('schedule', '=', 1)
             ->where('schedule_at', '<=', $current_date)
             ->where(function ($query) {
-                $query->where('gateway_status', '=', 'UNDELIVERED');
+                $query->where('status', '=', 'PENDING');
             })->whereBetween('sms_logs.created_at', [$start_at, $end_at])->take($limit)->get();
 
         echo "<pre>";
         print_r($recipients);
+        exit();
 
         if ($recipients->isNotEmpty()) {
             foreach ($recipients as $val) {
@@ -161,8 +166,12 @@ class CronJobController extends Controller
         $end_at = date('2022-12-21');
 
         //deal with attachment
-        $path = 'assets/xls/Book2.xlsx';
+        $path = 'assets/xls/renfrid-log-report-29122022.xls';
         $rows = Excel::toArray([], $path);
+
+        echo "<pre>";
+        print_r($rows);
+        exit();
 
         $count = 2;
         $success = 0;
@@ -179,11 +188,12 @@ class CronJobController extends Controller
                 ->whereBetween('sms_logs.created_at', [$start_at, $end_at])->first();
 
             if ($sms_log) {
-                if ($sms_log->gateway_status == 'DELIVERED' || $sms_log->gateway_status == 'UNDELIVERED') {
+                if ($sms_log->gateway_status == 'SENT' || $sms_log->gateway_status == 'PENDING') {
                     if (is_numeric($delivered_date)) {
                         //convert floating to datetime
                         $unix_date = ($delivered_date - 25569) * 86400;
                         $sms_log->delivered_at = gmdate("Y-m-d H:i:s", $unix_date);
+                        $sms_log->gateway_status = $status;
                     }
                     $sms_log->save();
 
