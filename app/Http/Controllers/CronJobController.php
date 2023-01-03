@@ -9,10 +9,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
-
 class CronJobController extends Controller
 {
     private $messaging;
@@ -26,7 +22,7 @@ class CronJobController extends Controller
     function send_sms()
     {
         //limit
-        $limit = 5000;
+        $limit = 3000;
 
         //recipients
         $recipients = SmsLog::select('id', 'phone', 'message', 'sender')
@@ -93,11 +89,7 @@ class CronJobController extends Controller
         $current_date = date('Y-m-d H:i:s');
 
         //limit
-        $limit = 5000;
-
-        //date range
-        $start_at = date('2023-01-03');
-        $end_at = date('2023-01-03');
+        $limit = 3000;
 
         //recipients
         $recipients = SmsLog::select('id', 'phone', 'message', 'sender')
@@ -105,7 +97,7 @@ class CronJobController extends Controller
             ->where('schedule_at', '<=', $current_date)
             ->where(function ($query) {
                 $query->where('status', '=', 'PENDING');
-            })->whereBetween('sms_logs.created_at', [$start_at, $end_at])->take($limit)->get();
+            })->take($limit)->get();
 
         echo "<pre>";
         print_r($recipients);
@@ -162,11 +154,11 @@ class CronJobController extends Controller
     function xls_delivery_report()
     {
         //date range
-        $start_at = date('2022-12-19');
-        $end_at = date('2022-12-21');
+        $start_at = date('2023-01-03');
+        $end_at = date('2023-01-07');
 
         //deal with attachment
-        $path = 'assets/xls/renfrid-log-report-29122022.xls';
+        $path = 'assets/xls/.xls';
         $rows = Excel::toArray([], $path);
 
         echo "<pre>";
@@ -181,7 +173,6 @@ class CronJobController extends Controller
             $phone = $this->messaging->addZeroOnPhone($phone);
             $status = $rows[0][$i][4];
             $delivered_date = $rows[0][$i][1];
-
 
             //take all recipients for delivery report
             $sms_log = SmsLog::where('phone', '=', $phone)
@@ -210,11 +201,11 @@ class CronJobController extends Controller
     function delivery_report()
     {
         //limit
-        $limit = 100;
+        $limit = 2000;
 
         //date range
-        $start_at = date('2022-12-19');
-        $end_at = date('2022-12-21');
+        $start_at = date('2023-01-03');
+        $end_at = date('2023-01-10');
 
         //take all recipients for delivery report
         $recipients = SmsLog::select('id', 'gateway_id', 'phone')->where(function ($query) {
@@ -222,9 +213,9 @@ class CronJobController extends Controller
                 ->orWhere(['gateway_status' => 'PENDING']);
         })->whereBetween('sms_logs.created_at', [$start_at, $end_at])->take($limit)->get();
 
-        // echo "<pre>";
-        // print_r($recipients);
-        // exit();
+        echo "<pre>";
+        print_r($recipients);
+        exit();
 
         foreach ($recipients as $val) {
             //create arr data

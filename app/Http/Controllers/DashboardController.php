@@ -24,13 +24,13 @@ class DashboardController extends Controller
 
         if (isset($_POST['filter'])) {
             //post variable
-            $start_at = $request->input('start_at');
-            $end_at = $request->input('end_at');
+            $start_date = $request->input('start_at');
+            $end_date = $request->input('end_at');
 
             //start data and end date
-            if ($start_at != null && $end_at != null) {
-                $start_at = date('Y-m-d', strtotime($start_at));
-                $end_at = date('Y-m-d', strtotime($end_at));
+            if ($start_date != null && $end_date != null) {
+                $start_at = date('Y-m-d', strtotime($start_date));
+                $end_at = date('Y-m-d', strtotime($end_date));
 
                 //total sms
                 $all_sms = SmsLog::whereBetween('sms_logs.created_at', [$start_at, $end_at])
@@ -52,6 +52,9 @@ class DashboardController extends Controller
                     ->count();
             }
         } else {
+            $start_date = null;
+            $end_date = null;
+
             //total sms
             $all_sms = SmsLog::count();
 
@@ -67,6 +70,8 @@ class DashboardController extends Controller
 
         //construct data
         $data = [
+            'start_date' => $start_date,
+            'end_date' => $end_date,
             'total_sms' => $all_sms,
             'delivered_sms' => $all_delivered_sms,
             'pending_sms' => $all_pending_sms,

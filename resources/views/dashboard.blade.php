@@ -38,14 +38,14 @@
                         <div class="row">
                             <div class="col-lg-4">
                                 <div class="mb-3">
-                                    {{ Form::date('start_at', old('start_at'), ['placeholder="Start Date..."', 'class="form-control"']) }}
+                                    {{ Form::date('start_at', old('start_at', $data['start_date']), ['placeholder="Start Date..."', 'class="form-control"']) }}
                                 </div>
                             </div>
                             <!--./col -->
 
                             <div class="col-lg-4">
                                 <div class="mb-3">
-                                    {{ Form::date('end_at', old('end_at'), ['placeholder="End Date..."', 'class="form-control"']) }}
+                                    {{ Form::date('end_at', old('end_at', $data['end_date']), ['placeholder="End Date..."', 'class="form-control"']) }}
                                 </div>
                             </div>
                             <!--./col -->
