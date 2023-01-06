@@ -147,15 +147,15 @@ class CronJobController extends Controller
     {
         //date range
         $start_at = date('2023-01-03');
-        $end_at = date('2023-01-07');
+        $end_at = date('2023-01-05');
 
         //deal with attachment
-        $path = 'assets/xls/.xls';
+        $path = 'assets/xls/FileNo1.xlsx';
         $rows = Excel::toArray([], $path);
 
-        echo "<pre>";
-        print_r($rows);
-        exit();
+        // echo "<pre>";
+        // print_r($rows);
+        // exit();
 
         $count = 2;
         $success = 0;
