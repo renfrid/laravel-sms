@@ -153,9 +153,9 @@ class CronJobController extends Controller
         $path = 'assets/xls/FileNo1.xlsx';
         $rows = Excel::toArray([], $path);
 
-        // echo "<pre>";
-        // print_r($rows);
-        // exit();
+        echo "<pre>";
+        print_r($rows);
+        exit();
 
         $count = 2;
         $success = 0;
