@@ -84,6 +84,10 @@ class CronJobController extends Controller
         //current date
         $current_date = date('Y-m-d H:i:s');
 
+        //date range
+        $start_at = date('2023-01-03');
+        $end_at = date('2023-01-05');
+
         //limit
         $limit = 2000;
 
@@ -92,8 +96,8 @@ class CronJobController extends Controller
             ->where('schedule', '=', 1)
             ->where('schedule_at', '<=', $current_date)
             ->where(function ($query) {
-                $query->where('status', '=', 'PENDING');
-            })->take($limit)->get();
+                $query->where('gateway_status', '=', 'UNDELIVERED');
+            })->whereBetween('sms_logs.created_at', [$start_at, $end_at])->take($limit)->get();
 
         if ($recipients->isNotEmpty()) {
             foreach ($recipients as $val) {
@@ -153,9 +157,9 @@ class CronJobController extends Controller
         $path = 'assets/xls/FileNo2.xlsx';
         $rows = Excel::toArray([], $path);
 
-        // echo "<pre>";
-        // print_r($rows);
-        // exit();
+        echo "<pre>";
+        print_r($rows);
+        exit();
 
         $count = 2;
         $success = 0;
