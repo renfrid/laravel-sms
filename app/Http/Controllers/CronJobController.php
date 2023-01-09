@@ -175,7 +175,7 @@ class CronJobController extends Controller
                     //convert floating to datetime
                     // $unix_date = ($delivered_date - 25569) * 86400;
                     // $sms_log->delivered_at = gmdate("Y-m-d H:i:s", $unix_date);
-                    $sms_log->delivered_at = $delivered_date;
+                    $sms_log->delivered_at = date('Y-m-d H:i:s', strtotime($delivered_date));
                     $sms_log->gateway_status = $status;
                     $sms_log->save();
 
