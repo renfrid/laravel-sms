@@ -154,21 +154,17 @@ class CronJobController extends Controller
         $end_at = date('2023-01-05');
 
         //deal with attachment
-        $path = 'assets/xls/FileNo2.xlsx';
+        $path = 'assets/xls/FileNo3.csv';
         $rows = Excel::toArray([], $path);
-
-        echo "<pre>";
-        print_r($rows);
-        exit();
 
         $count = 2;
         $success = 0;
 
         for ($i = 1; $i < sizeof($rows[0]); $i++) {
-            $phone = $rows[0][$i][5];
+            $phone = $rows[0][$i][0];
             $phone = $this->messaging->addZeroOnPhone($phone);
-            $status = $rows[0][$i][4];
-            $delivered_date = $rows[0][$i][1];
+            $status = $rows[0][$i][1];
+            $delivered_date = $rows[0][$i][7];
 
             //take all recipients for delivery report
             $sms_log = SmsLog::where('phone', '=', $phone)
@@ -176,12 +172,11 @@ class CronJobController extends Controller
 
             if ($sms_log) {
                 if ($sms_log->gateway_status == 'SENT' || $sms_log->gateway_status == 'PENDING') {
-                    if (is_numeric($delivered_date)) {
-                        //convert floating to datetime
-                        $unix_date = ($delivered_date - 25569) * 86400;
-                        $sms_log->delivered_at = gmdate("Y-m-d H:i:s", $unix_date);
-                        $sms_log->gateway_status = $status;
-                    }
+                    //convert floating to datetime
+                    // $unix_date = ($delivered_date - 25569) * 86400;
+                    // $sms_log->delivered_at = gmdate("Y-m-d H:i:s", $unix_date);
+                    $sms_log->delivered_at = $delivered_date;
+                    $sms_log->gateway_status = $status;
                     $sms_log->save();
 
                     //success
