@@ -100,7 +100,7 @@ class CronJobController extends Controller
             ->where('schedule', '=', 1)
             ->where('schedule_at', '<=', $current_date)
             ->where(function ($query) {
-                $query->where('gateway_status', '=', 'PENDING');
+                $query->where('status', '=', 'PENDING');
             })->whereBetween('sms_logs.created_at', [$start_at, $end_at])->take($limit)->get();
 
         if ($recipients->isNotEmpty()) {
