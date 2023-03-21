@@ -89,8 +89,8 @@ class CronJobController extends Controller
         $current_date = date('Y-m-d H:i:s');
 
         //date range
-        $start_at = date('2023-03-01');
-        $end_at = date('2023-03-10');
+        $start_at = date('2023-03-15');
+        $end_at = date('2023-03-30');
 
         //limit
         $limit = 2000;
@@ -198,11 +198,15 @@ class CronJobController extends Controller
         //limit
         $limit = 2000;
 
+        //date range
+        $start_at = date('2023-03-15');
+        $end_at = date('2023-03-30');
+
         //take all recipients for delivery report
         $recipients = SmsLog::select('id', 'gateway_id', 'phone')->where(function ($query) {
             $query->where(['gateway_status' => 'SENT'])
                 ->orWhere(['gateway_status' => 'PENDING']);
-        })->take($limit)->get();
+        })->whereBetween('sms_logs.created_at', [$start_at, $end_at])->take($limit)->get();
 
         foreach ($recipients as $val) {
             //create arr data
