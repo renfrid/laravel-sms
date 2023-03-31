@@ -26,7 +26,7 @@ class CronJobController extends Controller
 
         //date range
         $start_at = date('2023-03-01');
-        $end_at = date('2023-03-10');
+        $end_at = date('2023-04-10');
 
         //recipients
         $recipients = SmsLog::select('id', 'phone', 'message', 'sender')
@@ -90,7 +90,7 @@ class CronJobController extends Controller
 
         //date range
         $start_at = date('2023-03-15');
-        $end_at = date('2023-03-30');
+        $end_at = date('2023-04-10');
 
         //limit
         $limit = 2000;
@@ -155,7 +155,7 @@ class CronJobController extends Controller
     {
         //date range
         $start_at = date('2023-03-01');
-        $end_at = date('2023-03-10');
+        $end_at = date('2023-04-10');
 
         //deal with attachment
         $path = 'assets/xls/FileNo3.csv';
@@ -200,7 +200,7 @@ class CronJobController extends Controller
 
         //date range
         $start_at = date('2023-03-15');
-        $end_at = date('2023-03-30');
+        $end_at = date('2023-04-10');
 
         //take all recipients for delivery report
         $recipients = SmsLog::select('id', 'gateway_id', 'phone')->where(function ($query) {
